@@ -1,0 +1,2229 @@
+This patch declares the internal struct and functions as static to provide
+more security.
+
+  Thanks, this looks good to me.  James, can you apply this directly to
+security-next?
+
+Kent
+
+Add tracepoints to debug checkpoint request.
+As per above discussion, it has been oberved that few drivers are
+setting q->limits.max_discard_sectors to more than (UINT_MAX >> 9)
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+
+Also, adding BLK_DEF_MAX_DISCARD_SECTORS macro to use it instead
+of UINT_MAX >> 9.
+As per above discussion, there is possibility that request's __data_len
+field may overflow when max_discard_sectors greater than UINT_MAX >> 9
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+It is better to use blk_queue_max_discard_sectors helper
+function to set max_discard_sectors as it checks
+max_discard_sectors upper limit UINT_MAX >> 9
+
+similar issue was reported for mmc in below link
+https://lkml.org/lkml/2013/4/1/292
+
+If multiple discard requests get merged, merged discard request's
+size exceeds 4GB, there is possibility that merged discard request's
+__data_len field may overflow.
+
+This patch fixes this issue.
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the REGULATOR component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE component driver of the DA9058 MFD.
+
+There are 4 CamelCase warnings from scripts/checkpatch.pl, but they
+are due to struture field names in the regulator core not due to
+names created in this driver
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- reverted regulator_desc.min_uv to min_uV
+- reverted regulator_desc.uv_step to uV_step
+- reverted regulation_constraints.min_uv to min_uV
+- reverted regulation_constraints.max_uv to max_uV
+- corrected dates on copyright statements
+- removed system specific regulator consumer
+- use multiple exit points in functions when no common code
+  is to be executed.
+- embedded a regulator_init_data in the platform data
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the HWMON component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE and ADC component drivers of the DA9058 MFD.
+
+Please note that this driver does use regmap via the CORE and ADC
+component drivers of the DA9058 MFD.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- corrected dates on copyright statements
+Documentation/hwmon/da9058
+- removed trailing blank line to prevent 'git apply' warning
+drivers/hwmon/da9058-hwmon.c
+- put spaces aount the '*' multiply operator
+- use the word 'extract' rather than 'recover' in a comment
+- use da9058_labels[] in show_label instead of switch case
+- use multiple exit points in functions when no common code
+  is to be executed.
+- aligned continuation lines to preceeding '(' or indent + 2 tabs
+- removed redundant mutex hwmon_lock
+- merged 6 duplicate lines from 2 branches of if statement
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the GPIO component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE component driver of the DA9058 MFD.
+The meaning of the PMIC register 21 bits 1 and 5 has been documented
+in the driver source.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- corrected dates on copyright statements
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the REGULATOR component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE component driver of the DA9058 MFD.
+
+There are 4 CamelCase warnings from scripts/checkpatch.pl, but they
+are due to struture field names in the regulator core not due to
+names created in this driver
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- reverted regulator_desc.min_uv to min_uV
+- reverted regulator_desc.uv_step to uV_step
+- reverted regulation_constraints.min_uv to min_uV
+- reverted regulation_constraints.max_uv to max_uV
+- corrected dates on copyright statements
+- removed system specific regulator consumer
+- use multiple exit points in functions when no common code
+  is to be executed.
+- embedded a regulator_init_data in the platform data
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the RTC component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE component driver of the DA9058 MFD.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- changed to using devm_request_threaded_irq()
+- replaced the very descriptive error exit labels by err1 and err1
+- corrected dates on copyright statements
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the HWMON component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE and ADC component drivers of the DA9058 MFD.
+
+Please note that this driver does use regmap via the CORE and ADC
+component drivers of the DA9058 MFD.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- corrected dates on copyright statements
+Documentation/hwmon/da9058
+- removed trailing blank line to prevent 'git apply' warning
+drivers/hwmon/da9058-hwmon.c
+- put spaces aount the '*' multiply operator
+- use the word 'extract' rather than 'recover' in a comment
+- use da9058_labels[] in show_label instead of switch case
+- use multiple exit points in functions when no common code
+  is to be executed.
+- aligned continuation lines to preceeding '(' or indent + 2 tabs
+- removed redundant mutex hwmon_lock
+- merged 6 duplicate lines from 2 branches of if statement
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the ONKEY component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC driver.
+It depends on the CORE component driver of the DA9058 MFD.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- changed to using devm_request_threaded_irq()
+- replaced the very descriptive error exit labels by err1 and err1
+- corrected dates on copyright statements
+Bryan O'Donoghue - April 19, 2013, 5:23 p.m.
+Architectural MSRs associated with microcode are for P6 or higher.
+Add a check to early microcode to detect < P6.
+
+Without a check for < P6 - we end up reading from unimplemented MSRs
+on Pentium.
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419 of linux-next
+
+This is the ADC component driver of the Dialog DA9058 PMIC.
+This driver is just one component of the whole DA9058 PMIC
+driver. It depends on the DA9058 CORE component driver.
+The HWMON component driver depends on this ADC component driver.
+
+This component driver recieves the actual platform data from
+the DA9058 CORE driver, whose settings may be overridden from
+the platform data supplied from the machine driver.
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- changed to using devm_request_threaded_irq()
+- corrected dates on copyright statements
+Anthony Olech (Opensource) - April 19, 2013, 4:56 p.m.
+This patch is relative to next-20130419
+
+This is the CORE component driver for the Dialog DA9058 PMIC MFD.
+
+This driver, via MFD CELLs, causes all the other component drivers to
+be loaded (if a module), and initialized via their probe methods.
+All the other component drivers depend on this CORE component driver.
+
+This CORE component driver supplies all of the MFD cell platform data
+used by the other DA9058 component drivers for initialization.
+This CORE component driver recieves the actual platform data from the
+machine driver, but that config data has the nature of overides from
+sensible default values. Thus it is not essential to provide any real
+platform data at all from the machine driver.
+
+There are 2 CamelCase warnings from scripts/checkpatch.pl, but they
+are due to struture field names in the regulator core not due to
+names created in this driver
+
+Changes relative to V5 of this patch:
+- rebased to next-20130419 in git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+- removed redundant #include <linux/mfd/da9058/version.h>
+- corrected dates on copyright statements
+
+I personally dislike the indent-to-braces style because it causes
+unnecessary churn in patches like this.  The reindenting improves
+nothing at all.  On the contrary, when going through revision history
+at some point in the future I have to waste brain time to verify
+whether any function change has slipped in or not.  It doesn't just
+waste my time right now, it will continue to waste time in the future.
+It will waste time when people care about revision history because
+they encounter a bug, want a fix quick and are pressed for time.
+
+If you care about my ack, please remove random churn.  This is not a
+competition about who gets the most lines in git blame.
+introduced in kernel 3.9 CONFIG_ARM_VIRT_EXT is default for all V7 arm 
+cpu's. this is wrong and breaks smp support on BCM4708 for example.
+so keep it optional since no all v7 cpu's seem to support it. BCM4708 
+for instance is a arm cortex-a9. please merge this into one of the next 
+patches.
+
+
+
+Winkler, Tomas - April 19, 2013, 6:16 p.m.
+Rename the function to mei_amthif_irq_read_msg
+and change parameters order
+This enum leaks out to userspace via error messages, so fix the spelling.
+
+Winkler, Tomas - April 19, 2013, 6:16 p.m.
+While writting to device is limitted to max_msg_length advertized
+in client properites the read can be much longer delivered consequiting chunks.
+
+We use krealloc to enlarge the buffer when needed.
+With a kernel tree that contains a generated include/linux/version.h, if
+someone just does a git pull to update to a newer kernel version that
+includes
+
+
+"UAPI: Plumb the UAPI Kbuilds into the user header installation and
+checking"
+
+"UAPI: Move linux/version.h"
+
+Any newer build will fail to overwrite or remove the stale version.h
+file. The new include/generated/uapi/linux/version.h is indeed
+generated, but the stale file in include/linux has precedence.
+
+This leads to very unfortunate consequences for any user relying on
+version.h to expose the kernel version accurately, since the old "stale"
+kernel version will be seen by the build.
+
+Ensure that stale include/linux/version.h is removed whenever the new
+version.h is generated.
+Use a more current logging style with dev_printk
+where possible.
+
+o Convert uses of US_DEBUGP to usb_stor_dbg
+o Add "struct us_data *" to usb_stor_dbg uses
+o usb_stor_dbg now uses struct device */dev_vprint_emit
+o Removed embedded function names
+o Coalesce formats
+o Remove trailing whitespace
+o Remove useless OOM messages
+o Remove useless function entry/exit logging
+o Convert some US_DEBUGP uses to dev_info and dev_dbg
+
+Object size is slightly reduced when debugging
+is enabled, slightly increased with no debugging
+because some initialization and removal messages
+are now always emitted.
+On Fri, 2013-04-19 at 09:41 -0500, Jacob Shin wrote:
+> 
+> Thank you again, for taking the time.
+
+Ah something I just remembered, could you do a patch like the below
+one? That makes things like perf stat -A work as expected.
+
+
+This commit therefore adds the required RCU read-side critical section to
+perf_event_comm().
+1. Rename the function and change parameters order,
+ so that first parameter is mei_device
+2. Simplify the function code flow
+3. Rename helper functions to more self descriptive names
+4. Use helpers common functions where possible
+While writting to device is limitted to max_msg_length advertized
+in client properites the read can be much longer delivered consequiting chunks.
+
+We use krealloc to enlarge the buffer when needed.
+
+This enum leaks out to userspace via error messages, so fix the spelling.
+i2c_dw_xfer_msg() pushes a number of bytes to transmit/receive
+to/from the bus into the TX FIFO.
+For master-rx transactions, the maximum amount of data that can be
+received is calculated depending solely on TX and RX FIFO load.
+
+This is racy - TX FIFO may contain master-rx data yet to be
+processed, which will eventually land into the RX FIFO. This
+data is not taken into account and the function may request more
+data than the controller is actually capable of storing.
+
+This patch ensures the driver takes into account the outstanding
+master-rx data in TX FIFO to prevent RX FIFO overrun.
+These inlines are only used by kernel/sched/fair.c so they do not
+need to be present in the main kernel/sched/sched.h file.
+
+This large chunk of load calculation code can be easily divorced from
+the main core.c scheduler file, with only a couple prototypes and
+externs added to a kernel/sched header.
+
+Some recent commits expanded the code and the documentation of it,
+making it large enough to warrant separation.  For example, see:
+
+  556061b, "sched/nohz: Fix rq->cpu_load[] calculations"
+  5aaa0b7, "sched/nohz: Fix rq->cpu_load calculations some more"
+  5167e8d, "sched/nohz: Rewrite and fix load-avg computation -- again"
+
+More importantly, it helps reduce the size of the main sched/core.c
+by yet another significant amount (~600 lines).
+Herbert,
+
+This is a follow on patch to the optimized sha256 and sha512 patch series that's just
+merged into the crypto-dev.  Let me know if you prefer me to respin the
+patch series.
+
+This patch corrects the prototype of sha256_transform_asm and
+sha512_transform_asm function pointer declaration to static.  It also
+fixes a typo in sha512_ssse3_final function that affects the computation
+of upper 64 bits of the buffer size.
+
+Thanks.
+
+Tim
+Fix printk format warning by using %zu for 'size_t':
+
+fs/nilfs2/page.c:430:6: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'size_t' [-Wformat]
+Fix printk format warnings by using %zd for 'ssize_t' variables:
+
+fs/ceph/file.c:751:2: warning: format '%ld' expects argument of type 'long int', but argument 11 has type 'ssize_t' [-Wformat]
+fs/ceph/file.c:762:2: warning: format '%ld' expects argument of type 'long int', but argument 11 has type 'ssize_t' [-Wformat]
+> > Thank you again, for taking the time.
+> 
+> Ah something I just remembered, could you do a patch like the below
+> one? That makes things like perf stat -A work as expected.
+
+Ah, okay. Here is V3 that also creates "cpumask" sysfs file. Tested
+that the "perf stat -a .." works as expected.
+
+Thanks again,
+
+V3:
+- Added "cpumask" attribute to sysfs to get "perf stat -a .." working
+  correctly
+
+V2:
+- Added event migration if possible when CPU goes offline
+
+Add support for AMD Family 15h [and above] northbridge performance
+counters. MSRs 0xc0010240 ~ 0xc0010247 are shared across all cores
+that share a common northbridge.
+
+Add support for AMD Family 16h L2 performance counters. MSRs
+0xc0010230 ~ 0xc0010237 are shared across all cores that share a
+common L2 cache.
+
+We do not enable counter overflow interrupts. Sampling mode and
+per-thread events are not supported.
+Alexey Khoroshilov - April 19, 2013, 10:05 p.m.
+If ext4_fill_super() failed after extents status shrinker
+has been registered, the shrinker is left in a global list
+while the memory, it sits in, is already freed.
+Oops is not so bad scenario after that.
+
+Found by Linux File System Verification project (linuxtesting.org).
+Moves the relocation handling into C, after decompression. Only
+kernels that need relocation support will use the code. The new
+CONFIG_RANDOMIZE_BASE does not yet do anything except turn on this logic
+for 64-bit kernels.
+
+Based on work by Neill Clift and Michael Davidson.
+x86, microcode: Verify the family before dispatching microcode patching
+
+For each CPU vendor that implements CPU microcode patching, there will
+be a minimum family for which this is implemented.  Verify this
+minimum level of support.
+
+This can be done in the dispatch function or early in the application
+functions.  Doing the latter turned out to be somewhat awkward because
+of the ineviable split between the BSP and the AP paths, and rather
+than pushing deep into the application functions, do this in
+the dispatch function.
+The needs_suspend member is unused now that we always do the
+suspend/resume handling (see 6a4dae5 (ARM: 7565/1: sched: stop
+sched_clock() during suspend, 2012-10-23)).
+
+Register with the ARM sched_clock framework now that it supports
+64 bits. This also fixes two problems with the current sched_clock
+support for machines using the archited timers. First off, we
+don't subtract the start value from subsequent sched_clock calls
+so we can potentially start off with sched_clock returning
+gigantic numbers. Second, there is no support for suspend/resume
+handling so problems such as discussed in 6a4dae5 (ARM: 7565/1:
+sched: stop sched_clock() during suspend, 2012-10-23) can happen.
+The arm architected system counter has at least 56 bits of
+useable bits. Add support to ARM's sched_clock implementation for
+counters with more than 32 bits so we can avoid the complexity of
+dealing with wraparound on these devices while benefiting from
+the irqtime accounting and suspend/resume handling that the ARM
+sched_clock code already has.
+If we're suspended and sched_clock() is called we're going to
+read the hardware one more time and throw away that value and
+return back the cached value we saved during the suspend
+callback. This is wasteful, let's short circuit all that and
+return the cached value if we're suspended as early as possible.
+
+* make warning smp-safe
+* result of atomic _unless_zero functions should be checked by caller
+    to avoid use-after-free error
+>> in arch/arm64/include/asm, not define the function cmpxchg64
+>>
+>>   when compiling with allmodconfig,
+>>     drivers/block/blockconsole.c will need this function.
+>>
+>>   I am not quite familiar with ARM64 (neither ARM64 assembler)
+>>
+>>   can any member helps to send related patch ?
+>>     if no one have time to send related patch, I should try.
+>>     and I am glad to try, but need additional time resources,
+>>     if I try, I should finish it within this month (2013-4-30).
+>>
+>>   welcome any suggestions or completions.
+> 
+> cmpxchg64 is the same as cmpxchg on 64-bit platforms, can't the
+> driver be changed to use the latter?
+> 
+> 	Arnd
+> 
+> 
+
+  can we be sure that cmpxchg64 is equal to cmpchg on all 64-bit platforms ?
+    (I guess, the driver may need cross multiple platforms)
+    (it seems, under x86, s390, better use cmpxchg64, at least they define it).
+
+  whether we can be sure or not,
+    I still prefer to define the macro cmpxchg64 just the alias of cmpxchg.
+      (and I also guess ARM64 is always on 64-bit platform)
+
+  the related patch may be like below.
+
+  I think, we can also reference the implementation of s390:
+    it is in arch/s390/include/asm/cmpxchg.h.
+    since we are ARM64, excluding ARM(32,16...), we can only consider 64-bit.
+    if in the future, ARM64 and ARM are merged together:
+      we can use CONFIG_64BIT to switch the cmpxchg64 definition.
+      if define CONFIG_64BIT, use cmpxchg instead of cmpxchg64.
+      else, use the definition of ARM (arch/arm/include/asm/cmpxchg.h already defines cmpxchg64)
+All regulators have ascendant voltage list in this driver.
+Some regulators have more than 200 supported voltages.
+e.g.
+
+Thus it worth converting to regulator_map_voltage_ascend rather than use
+default regulator_map_voltage_iterate.
+
+For consistent, convert all regulators to regulator_map_voltage_ascend.
+All regulators have ascendant voltage list in this driver.
+Thus use regulator_map_voltage_ascend is more efficient than the default
+regulator_map_voltage_iterate.
+On a VT-d capable machine Linux will enable IOMMU by default. If it
+then kexec's a second kernel with intel_iommu=off, this second kernel
+will leave the DMA remapping engine on with no code handling it. The
+symptom is at least USB and SATA drives stop working. This patch fixes
+the problem by always disabling DMA remapping when intel_iommu=off.
+Hi,
+
+Ingo, Steven, I get this patch from 3.4 preempt-rt patch set, It seems that this patch
+fix relayfs bug not only for rt kernel, but also for mainline.
+
+When I'm using below ktap script to tracing all event tracepoints, without this patch,
+the system will hang in few seconds, the patch indeed fix the problem as the changelog pointed.
+
+This patch is old, I can found the original patch discussion in 2007.
+	http://marc.info/?l=linux-kernel&m=118544794717162&w=2
+(In that mail thread, the patch didn't fix that problem, but it fix the problem I encountered now)
+
+I hope you can remember this :)
+
+so why we didn't commit this patch into mainline? any concern?
+
+Thanks.
+sparse: symbol 'pps_kc_hardpps_mode' was not declared. Should it be static?
+Hi Lee and Russell,
+
+While going through the arm-soc tree yesterday, I noticed two things:
+
+* I had already done a patch for this in January which I meant to queue up
+  for 3.10, as it is needed to make spear13xx use the dma-engine binding
+* I actually forgot to merge that branch into for-next :(
+
+I've put it into a "late" branch now. Could you have a look please?
+If there are any problems with this, I'll probably just drop the branch
+and queue it for 3.11 instead with the required fixes.
+
+	Arnd
+
+
+    serial: pl011: use generic DMA slave configuration if possible
+    
+    With the new OF DMA binding, it is possible to completely avoid the
+    need for platform_data for configuring a DMA channel. In cases where the
+    platform has already been converted, calling dma_request_slave_channel
+    should get all the necessary information from the device tree.
+    
+    This also adds a binding document specific to the pl011 controller,
+    and extends the generic primecell binding to mention "dmas" and other
+    common properties.
+    
+    Like the patch that converts the dw_dma controller, this is completely
+    untested and is looking for someone to try it out.
+ Architectural MSRs associated with microcode are for P6 or higher.
+Add a check to early microcode to detect < P6.
+
+Without a check for < P6 - we end up reading from unimplemented MSRs
+on Pentium.
+
+Thanks to Borislav Petkov for suggestion on where to intercept the P5
+resulting in fewer cycles and less code to accomplish the fix.
+Use regulator_set_voltage_time_sel() instead of open coded.
+
+If rdev->constraints->ramp_delay is specified, the setting will be used in
+regulator_set_voltage_time_sel(). And then pmic->ramp_delay[] is not used and
+can be removed.
+
+There is a different behavior change here:
+regulator_set_voltage_time_sel() always returns 
+	DIV_ROUND_UP(abs(new_volt - old_volt), ramp_delay);
+
+palma_smps_set_voltage_smps_time_sel() actually returns
+	DIV_ROUND_UP(abs(new_volt - old_volt), modified_ramp_delay);
+where the modified_ramp_delay is not exactly specified by 
+rdev->constraints->ramp_delay but a value from pmic->ramp_delay[id].
+
+So palma_smps_set_voltage_smps_time_sel() may return a smaller delay than
+regulator_set_voltage_time_sel() depend on rdev->constraints->ramp_delay value.
+
+I think the delay in both version are *safe* for the operation.
+
+Support device tree probe of the nomadik-mtu clocksource.
+
+The Nomadik clocksource driver has had a bad define making it
+impossible to use it for sched_clock() for a while. Fix this
+and also enable it for the Nomadik.
+This switches the Nomadik platform to also registering its
+clocksource from the device tree, removing unused support
+code as we go along.
+
+This moves all Nomadik clocks except the one used for the
+timer/clocksource over to the device tree.
+Hi Ted,
+
+the patch below has been now preliminarily verified to fix the read() on 
+/dev/urandom returning 0 -- the bug we have been discussing in San 
+Francisco last week.
+
+I think it should be applied to the current Linus' tree as soon as 
+possible, and also all the way back to all the affected -stable trees (the 
+backport to 3.0. is trivial, just a simple context change); on 
+architectures affected by this (apparently not x86_64, at least to my 
+knowledge), this causes severe malfunctioning of userspace which relies on 
+/dev/urandom never returning EOF (sshd, apache, ...). Observed on s390.
+
+BTW, do we have some numbers that would prove how and why exactly is
+902c098a3663 fixing real-time throughput by removing the spinlock?
+
+Basically what we have now is producer and consumer over r->entropy_count
+being serialized by retried cmpxchg loops, and I would think this could
+actually make the whole situation less fair. The reason being that we are
+basically spinning anyway in case of conflict on the critical section but
+we are lacking the fairness comfort ticket-based spinlocks do provide
+us ... hmm?
+
+Thanks in advance.
+
+
+
+
+Commit 902c098a3663 ("random: use lockless techniques in the interrupt path")
+turned IRQ path from being spinlock protected into lockless cmpxchg-retry
+update.
+
+That commit removed r->lock serialization between crediting entropy bits
+from IRQ context and accounting when extracting entropy on userspace read
+path, but didn't turn the r->entropy_count reads/updates in account() to
+use cmpxchg as well.
+
+It has been observed, that under certain circumstances this leads to read()
+on /dev/urandom to return 0 (EOF), as r->entropy_count gets corrupted and
+becomes negative, which in turn results in propagating 0 all the way from
+account() to the actual read() call.
+
+Convert the accounting code to be the proper lockless counterpart of what
+has been partially done by 902c098a3663.
+
+* make warning smp-safe
+* result of atomic _unless_zero functions should be checked by caller
+    to avoid use-after-free error
+All regulators have ascendant voltage list in this driver.
+Thus use regulator_map_voltage_ascend is more efficient than the default
+regulator_map_voltage_iterate.
+All regulators have ascendant voltage list in this driver.
+Thus use regulator_map_voltage_ascend is more efficient than the default
+regulator_map_voltage_iterate.
+Hi Linus,
+
+Three groups of fixes:
+
+1. Make sure we don't execute the early microcode patching if
+   family < 6, since it would touch MSRs which don't exist on those
+   families, causing crashes.
+
+2. The Xen partial emulation of HyperV can be dealt with more
+   gracefully than just disabling the driver.
+
+3. More EFI variable space magic.  In particular, variables hidden
+   from runtime code need to be taken into account too.
+
+The following changes since commit 26564600c9e88c6572a5e6ef5ae9121907edfb7f:
+
+  x86/mm: Flush lazy MMU when DEBUG_PAGEALLOC is set (2013-04-12 07:19:19 +0200)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-for-linus
+
+for you to fetch changes up to c0a9f451e4e7ecd2ad1a6c27ea5c31d0226bdddf:
+
+  Merge remote-tracking branch 'efi/urgent' into x86/urgent (2013-04-19 17:09:03 -0700)
+
+----------------------------------------------------------------
+
+H. Peter Anvin (2):
+      x86, microcode: Verify the family before dispatching microcode patching
+      Merge remote-tracking branch 'efi/urgent' into x86/urgent
+
+K. Y. Srinivasan (1):
+      x86, hyperv: Handle Xen emulation of Hyper-V more gracefully
+
+Matt Fleming (1):
+      x86, efivars: firmware bug workarounds should be in platform code
+
+Matthew Garrett (3):
+      Move utf16 functions to kernel core and rename
+      efi: Pass boot services variable info to runtime code
+      efi: Distinguish between "remaining space" and actually used space
+
+Richard Weinberger (2):
+      x86,efi: Check max_size only if it is non-zero.
+      x86,efi: Implement efi_no_storage_paranoia parameter
+
+Sergey Vlasov (2):
+      x86/Kconfig: Make EFI select UCS2_STRING
+      efi: Export efi_query_variable_store() for efivars.ko
+Hi Linus,
+
+I am sending this particular patchset under its own cover because I
+consider it to be a judgement call.
+
+The kexec/kdump people have found several problems with the support
+for loading over 4 GiB that was introduced in this merge cycle.  This
+is partly due to a number of design problems inherent in the way the
+various pieces of kdump fit together (it is pretty horrifically manual
+in many places.)
+
+After a *lot* of iterations this is the patchset that was agreed upon,
+but of course it is now very late in the cycle.  However, because it
+changes both the syntax and semantics of the crashkernel option, it
+would be desirable to avoid a stable release with the broken
+interfaces.
+
+	-hpa
+
+The following changes since commit 41ef2d5678d83af030125550329b6ae8b74618fa:
+
+  Linux 3.9-rc7 (2013-04-14 17:45:16 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-kdump-for-linus
+
+for you to fetch changes up to 157752d84f5df47e01577970f9c5f61a0b9f4546:
+
+  kexec: use Crash kernel for Crash kernel low (2013-04-17 12:35:34 -0700)
+
+When an event fails to parse and it's not in a new style format,
+try to parse it again as a cpu event.
+
+This allows to use sysfs exported events directly without //, so you can use
+
+perf record -e mem-loads ...
+
+instead of
+
+perf record -e cpu/mem-loads/
+
+v2: Handle multiple events
+v3: Move to separate function
+v4: Move library function to util/string.c
+v5: Handle unhandleable errors
+List the kernel supplied pmu event aliases in perf list
+
+It's better when the users can actually see them.
+
+v2: Fix pattern matching
+v3: perf_pmu__alias -> perf_pmu_alias
+
+This avoids some problems with spurious PMIs on Haswell.
+Haswell seems to behave more like P4 in this regard. Do
+the same thing as the P4 perf handler by unmasking
+the NMI only at the end. Shouldn't make any difference
+for earlier family 6 cores.
+
+Tested on Haswell, IvyBridge, Westmere, Saltwell (Atom)
+Add basic Haswell PMU support.
+
+Similar to SandyBridge, but has a few new events and two
+new counter bits.
+
+There are some new counter flags that need to be prevented
+from being set on fixed counters, and allowed to be set
+for generic counters.
+
+Also we add support for the counter 2 constraint to handle
+all raw events.
+
+Contains fixes from Stephane Eranian
+
+v2: Folded TSX bits into standard FIXED_EVENT_CONSTRAINTS
+v3: Use SNB LBR init code. Comment fix (Stephane Eranian)
+v4: Add the counter2 constraints. Fix comment in the right place.
+v5: Expand comment
+v6: Add CYCLE_ACTIVITY.* to counter constraints
+v7: Follow Linux style, not perf style
+v8: Add missing extra regs
+Add basic PEBS support for Haswell.
+The constraints are similar to SandyBridge with a few new events.
+
+v2: Readd missing pebs_aliases
+v3: Readd missing hunk. Fix some constraints.
+v4: Fix typo in PEBS event table (Stephane Eranian)
+Haswell has two additional LBR from flags for TSX: intx and abort, implemented
+as a new v4 version of the LBR format.
+
+Handle those in and adjust the sign extension code to still correctly extend.
+The flags are exported similarly in the LBR record to the existing misprediction
+flag
+
+v2: Add some _
+Add support for the Haswell extended (fmt2) PEBS format.
+
+It has a superset of the nhm (fmt1) PEBS fields, but has a longer record so
+we need to adjust the code paths.
+
+The main advantage is the new "EventingRip" support which directly
+gives the instruction, not off-by-one instruction. So with precise == 2
+we use that directly and don't try to use LBRs and walking basic blocks.
+This lowers the overhead of using precise significantly.
+
+Some other features are added in later patches.
+
+Reviewed-by: Stephane Eranian <eranian@google.com>
+v2: Rename various identifiers. Add more comments. Get rid of a cast.
+v3: fmt2->hsw rename
+v4: ip_of_the_event->real_ip rename
+v5: use pr_cont. white space changes.
+Recent Intel CPUs like Haswell and IvyBridge have a new alternative MSR
+range for perfctrs that allows writing the full counter width. Enable this
+range if the hardware reports it using a new capability bit.
+
+This lowers the overhead of perf stat slightly because it has to do less
+interrupts to accumulate the counter value. On Haswell it also avoids some
+problems with TSX aborting when the end of the counter range is reached.
+
+v2: Print the feature at boot
+v3: Rename field. Add comment.
+Haswell always give an extra LBR record after every TSX abort. This can confuse
+some clients. Suppress the extra record.
+
+This only works when the abort is visible in the window, that is if the
+extra record is the last entry in the LBR. If the abort has already
+left it it will stay.
+
+Export the TSX transaction and checkpointed qualifiers in sysfs,
+so that they can be used like this
+
+cpu/...,intx=1/
+
+v2: Moved bad hunk. Forbid some bad combinations.
+v3: Use EOPNOTSUPP. White space fixes (Stephane Eranian)
+v4: Only sysfs code for now
+In the PEBS handler report the transaction flags using the new
+generic transaction flags facility. Most of them come from
+the "tsx_tuning" field in PEBSv2, but the abort code is derived
+from the RAX register reported in the PEBS record.
+Add the glue in the user tools to record transaction flags with
+--transaction (-T was already taken) and dump them.
+
+Followon patches will use them.
+
+v2: Fix manpage
+v3: Move transaction to the end
+Sandy Bridge and Haswell support all required LBR filters natively,
+so there is no need to do instruction decoding in branch_type.
+This lowers the overhead of LBR sampling with filters.
+
+We enable far calls for call, so calls include exceptions, but that
+seems like a acceptable trade off for much faster LBR sampling.
+
+[Description and changes from AK]
+The Magic Mouse driver also supports the Magic Trackpad, so mention it
+in the KConfig description for the driver.
+
+Add a generic qualifier for transaction events, as a new sample
+type that returns a flag word. This is particularly useful
+for qualifying aborts: to distinguish aborts which happen
+due to asynchronous events (like conflicts caused by another
+CPU) versus instructions that lead to an abort.
+
+The tuning strategies are very different for those cases,
+so it's important to distinguish them easily and early.
+
+Since it's inconvenient and inflexible to filter for this
+in the kernel we report all the events out and allow
+some post processing in user space.
+
+The flags are based on the Intel TSX events, but should be fairly
+generic and mostly applicable to other architectures too. In addition
+to various flag words there's also reserved space to report an
+program supplied abort code. For TSX this is used to distinguish specific
+classes of aborts, like a lock busy abort when doing lock elision.
+
+Flags:
+
+Elision and generic transactions 		   (ELISION vs TRANSACTION)
+Aborts caused by current thread vs aborts caused by others (SYNC vs ASYNC)
+Retryable transaction				   (RETRY)
+Conflicts with other threads			   (CONFLICT)
+Transaction capacity overflow			   (CAPACITY)
+Memory related abort				   (MEMORY)
+Other unknown aborts				   (MISC)
+
+Transactions implicitely aborted can also return an abort code.
+This can be used to signal specific events to the profiler. A common
+case is abort on lock busy in a RTM eliding library (code 0xff)
+To handle this case we include the TSX abort code
+
+Common example aborts in TSX would be:
+
+- Conflict with another thread on memory read.
+                                      Flags: TRANSACTION|ASYNC|CONFLICT|MEMORY
+- executing a WRMSR in a transaction. Flags: TRANSACTION|SYNC|MISC
+- aborting on a MMIO in a driver.     Flags: TRANSACTION|MEMORY|SYNC
+- HLE transaction in user space is too large
+                                      Flags: ELISION|SYNC|MEMORY|CAPACITY
+
+The only flag that is somewhat TSX specific is ELISION.
+
+This adds the perf core glue needed for reporting the new flag word out.
+
+v2: Add MEM/MISC
+v3: Move transaction to the end
+Add a precise qualifier, like cpu/event=0x3c,precise=1/
+
+This is needed so that the kernel can request enabling PEBS
+for TSX events. The parser bails out on any sysfs parse errors,
+so this is needed in any case to handle any event on the TSX
+perf kernel.
+
+v2: Allow 3 as value
+Add support to perf stat to print the basic transactional execution statistics:
+Total cycles, Cycles in Transaction, Cycles in aborted transsactions
+using the intx and intx_checkpoint qualifiers.
+Transaction Starts and Elision Starts, to compute the average transaction length.
+
+This is a reasonable overview over the success of the transactions.
+
+Enable with a new --transaction / -T option.
+
+This requires measuring these events in a group, since they depend on each
+other.
+
+This is implemented by using TM sysfs events exported by the kernel
+
+v2: Only print the extended statistics when the option is enabled.
+This avoids negative output when the user specifies the -T events
+in separate groups.
+v3: Port to latest tree
+Extend the perf branch sorting code to support sorting by in_tx
+or abort qualifiers. Also print out those qualifiers.
+
+This also fixes up some of the existing sort key documentation.
+
+We do not support notx here, because it's simply not showing
+the in_tx flag.
+
+v2: Readd flags to man pages
+v3: Rename intx
+
+This is not arch perfmon, but older CPUs will just ignore it. This makes
+it possible to do at least some TSX measurements from a KVM guest
+
+Cc: gleb@redhat.com
+v2: Various fixes to address review feedback
+v3: Ignore the bits when no CPUID. No #GP. Force raw events with TSX bits.
+v4: Use reserved bits for #GP
+v5: Remove obsolete argument
+Add infrastructure to generate event aliases in /sys/devices/cpu/events/
+
+And use this to set up user friendly aliases for the common TSX events.
+TSX tuning relies heavily on the PMU, so it's important to be user friendly.
+
+This replaces the generic transaction events in an earlier version
+of this patchkit.
+
+tx-start/commit/abort  to count RTM transactions
+el-start/commit/abort  to count HLE ("elision") transactions
+tx-conflict/overflow   to count conflict/overflow for both combined.
+
+The general abort events exist in precise and non precise and precise-return
+variants.  Since the common case is sampling plain "tx-aborts" in precise.
+
+This is very important because abort sampling only really works
+with PEBS enabled, otherwise it would report the IP after the abort,
+not the abort point. But counting with PEBS has more overhead,
+so also have tx/el-abort-count aliases that do not enable PEBS
+for perf stat.
+
+In many cases sampling the return address with PEBS is still useful, so
+we also have tx/el-abort-return. These are mainly for sampling
+asynchronous conflicts, where it can be more beneficial to look at the
+complete critical section, than the exact abort point. We still
+want PEBS for those so that the transaction weight and flags can
+be examined.
+
+There is an tx-abort<->tx-aborts alias too, because I found myself
+using both variants.
+
+Also added friendly aliases for cpu/cycles,intx=1/ and
+cpu/cycles,intx=1,intx_cp=1/ and the same for instructions.
+These will be used by perf stat -T, and are also useful for users directly.
+So for example to get transactional cycles can use "perf stat -e cycles-t"
+
+This gives a clean set of generalized events to examine transaction
+success and aborts. Haswell has additional events for TSX, but those are more
+specialized for very specific situations.
+
+v2: Move to new sysfs infrastructure
+v3: Use own sysfs functions now
+v4: Add tx/el-abort-return for better conflict sampling
+With checkpointed counters there can be a situation where the counter
+is overflowing, aborts the transaction, is set back to a non overflowing
+checkpoint, causes interupt. The interrupt doesn't see the overflow
+because it has been checkpointed.  This is then a spurious PMI, typically with
+a ugly NMI message.  It can also lead to excessive aborts.
+
+Avoid this problem by:
+- Using the full counter width for counting counters (earlier patch)
+- Forbid sampling for checkpointed counters. It's not too useful anyways,
+checkpointing is mainly for counting. The check is approximate
+(to still handle KVM), but should catch the majority of cases.
+- On a PMI always set back checkpointed counters to zero.
+
+v2: Add unlikely. Add comment
+v3: Allow large sampling periods with CP for KVM
+v4: Use event_is_checkpointed. Use EOPNOTSUPP. (Stephane Eranian)
+Haswell supplies the address for every PEBS memory event, so always fill it in
+when the user requested it.  It will be 0 when not useful (no memory access)
+
+v2: Now include fmt1 too, so it works on Nehalem and later.
+v3: Remove extra code inside st|ld if.
+
+Make perf record -j aware of the new in_tx,no_tx,abort_tx branch qualifiers.
+
+v2: ABORT -> ABORTTX
+v3: Add more _
+ 
+ linux-v3.8-rc1 and later support for plug for blkdev_issue_discard with
+ commit 0cfbcafcae8b7364b5fa96c2b26ccde7a3a296a9 
+ (block: add plug for blkdev_issue_discard )
+ 
+ For example,
+ 1) DISCARD rq-1 with size size 4GB
+ 2) DISCARD rq-2 with size size 1GB
+ 
+ If these 2 discard requests get merged, final request size will be 5GB.
+ 
+ In this case, request's __data_len field may overflow as it can store
+ max 4GB(unsigned int).
+ 
+ This issue was observed while doing mkfs.f2fs on 5GB SD card:
+ https://lkml.org/lkml/2013/4/1/292
+
+ Few drivers(e.g. mmc, mtd..) set q-limits.max_discard_sectors
+ more than UINT_MAX  9 sectors which is incorrect and it may lead to overflow
+ of request's __data_len field if merged discard request's size exceeds 4GB.
+ 
+ This patchset fixes this issue by updating helper function
+ blk_queue_max_discard_sectors which is used to set max_discard_sectors limit.
+ 
+ This patchset also replaces "q-limits.max_discard_sector = max_discard_sectors"
+ with blk_queue_max_discard_sectors call in other drivers like mmc, mtd etc.
+
+I really don't understand this explanation.  How can you be affected by
+the incorrect setting of q-limits.max_discard sectors when  n the
+blkdev_issue_discard() code you see:
+
+	max_discard_sectors = min(q-limits.max_discard_sectors, UINT_MAX 
+9);
+
+?
+
+The problem is not that we issue discards bigger than __data_len can
+allow, the problem is that we merge them larger than __data_len will
+allow.  That means the merge code needs fixing to pay attention to
+max_discard_sectors, so isn't this the correct fix:
+
+James
+
+ On Sat, Apr 20, 2013 at 2:06 AM, Sedat Dilek <sedat.dilek@gmail.com wrote:
+  On Sat, Apr 20, 2013 at 1:02 AM, Linus Torvalds
+  <torvalds@linux-foundation.org wrote:
+  On Fri, Apr 19, 2013 at 3:55 PM, Sedat Dilek <sedat.dilek@gmail.com wrote:
+ 
+  Davidlohr pointed to this patch (tested the triplet):
+ 
+  ipc, sem: do not call sem_lock when bogus sma:
+  https://lkml.org/lkml/2013/3/31/12
+ 
+  Is that what you mean?
+ 
+  Yup.
+ 
+ 
+  Davidlohr Bueso (1):
+        ipc, sem: do not call sem_lock when bogus sma
+ 
+  Linus Torvalds (1):
+        crazy rcu double free debug hack
+ 
+  With ***both*** patches applied I am able to build a Linux-kernel with
+  4 parallel-make-jobs again.
+  David's or your patch alone are not sufficient!
+ 
+The exit_sem()  do_smart_update()  update_queue() calls seem pretty
+well protected. Furthermore we're asserting that sma-sem_perm.lock is
+taken. This could just be a consequence of another issue. Earlier this
+week Andrew pointed out a potential race in semctl_main() where
+sma-sem_perm.deleted could be changed when cmd == GETALL.
+
+Sedat, could you try the attached patch to keep the ipc lock acquired
+(on top of the three patches you're already using) and let us know how
+it goes? We could also just have the RCU read lock instead of
+-sem.perm.lock for GETALL, but lets play it safe for now.
+
+Thanks,
+Davidlohr
+Add buffer_head flags so that buffer cache writebacks can be marked
+with the the appropriate request flags, so that metadata blocks can be
+marked appropriately in blktrace.
+This allows metadata writebacks which are issued via block device
+writeback to be sent with the current write request flags.
+As Dave Chinner pointed out at the 2013 LSF/MM workshop, it's
+important that metadata I/O requests are marked as such to avoid
+priority inversions caused by I/O bandwidth throttling.
+Check for const __devinitdata and non const __devinitconst
+
+People get this regularly wrong and it breaks the LTO builds,
+as it causes a section attribute conflict.
+
+This doesn't catch all mistakes -- spreading over multiple lines,
+getting const pointers wrong, but hopefully the common ones.
+The AMD K6 errata check relies on timing a indirect call.
+But the way it was written it could be optimized to a direct call.
+Force gcc to actually do a indirect call and not just
+constant resolve the target address.
+that maps them into O_DENY flags and make them visible for
+applications that use O_DENYMAND opens.
+
+forcemand mount option now lets us use Windows mandatory style of
+byte-range locks even if server supports posix ones - switches on
+Windows locking mechanism. Share flags is another locking mehanism
+provided by Windows semantic that can be used by NT_CREATE_ANDX
+command. This patch combines all Windows locking mechanism in one
+mount option by using NT_CREATE_ANDX to open files if forcemand is on.
+
+by passing these flags to NFSv4 open request.
+
+and simplify CIFSSMBOpen params.
+Construct share_access value from O_DENY* flags and send it to
+the server.
+This patch adds 3 flags:
+1) O_DENYREAD that doesn't permit read access,
+2) O_DENYWRITE that doesn't permit write access,
+3) O_DENYDELETE that doesn't permit delete or rename,
+
+Network filesystems CIFS, SMB2.0, SMB3.0 and NFSv4 have such flags -
+this change can benefit cifs and nfs modules as well as Samba and
+NFS file servers that export the same directory for Windows clients,
+or Wine applications that access the same files simultaneously.
+
+These flags are only take affect for opens on mounts with 'sharelock'
+mount option. They are translated to flock's flags:
+
+
+and set through flock_lock_file on a file. If the file can't be locked
+due conflicts with another open with O_DENY* flags, the -EBUSY error
+code is returned.
+
+Create codepath is slightly changed to prevent data races on
+newely created files: when open with O_CREAT can return with -EBUSY
+error for successfully created files due to a deny lock set by
+another task.
+
+The d_path() and related kernel functions currently take a writer
+lock on rename_lock because they need to follow pointers. By changing
+rename_lock to be the new sequence read/write lock, a reader lock
+can be taken and multiple d_path() threads can proceed concurrently
+without blocking each other.
+
+It is unlikely that the frequency of filesystem changes and d_path()
+name lookup will be high enough to cause writer starvation, the current
+limitation of the read/write lock should be acceptable in that case.
+
+All the sites where rename_lock is referenced were modified to use the
+sequence read/write lock declaration and access functions.
+
+When apply this patch to 3.8 or earlier releases, the unused function
+d_path_with_unreachable() in fs/dcache.c should be removed to avoid
+compilation warning.
+The d_lock was used in prepend_path() to protect dentry->d_name from
+being changed under the hood. As the caller of prepend_path() has
+to take the rename_lock before calling into it, there is no chance
+that d_name will be changed. The d_lock lock is only needed when the
+rename_lock is not taken.
+The current sequence lock supports 2 types of lock users:
+
+1. A reader who wants a consistent set of information and is willing
+   to retry if the information changes. The information that the
+   reader needs cannot contain pointers, because any writer could
+   invalidate a pointer that a reader was following. This reader
+   will never block but they may have to retry if a writer is in
+   progress.
+2. A writer who may need to modify content of a data structure. Writer
+   blocks only if another writer is in progress.
+
+This type of lock is suitable for cases where there are a large number
+of readers and much less writers. However, it has a limitation that
+reader who may want to follow pointer or cannot tolerate unexpected
+changes in the protected data structure must take the writer lock
+even if it doesn't need to make any changes.
+
+To more efficiently support this type of readers, a new lock type is
+introduced by this patch: sequence read/write lock. Two types of readers
+are supported by this new lock:
+
+1. Reader who has the same behavior as a sequence lock reader.
+2. Reader who may need to follow pointers. This reader will block if
+   a writer is in progress. In turn, it blocks a writer if it is in
+   progress. Multiple readers of this type can proceed concurrently.
+   Taking this reader lock won't update the sequence number.
+
+This new lock type is a combination of the sequence lock and read/write
+lock. Hence it will have the same limitation of a read/write lock that
+writers may be starved if there is a lot of contention.
+When we assign a new rpc_client to clp->cl_rpcclient, we need to destroy
+the old one.
+It is unsafe to use list_for_each_entry_safe() here, because
+when we drop the nn->nfs_client_lock, we pin the _current_ list
+entry and ensure that it stays in the list, but we don't do the
+same for the _next_ list entry. Use of list_for_each_entry() is
+therefore the correct thing to do.
+
+Also fix the refcounting in nfs41_walk_client_list().
+
+Finally, ensure that the nfs_client has finished being initialised
+and, in the case of NFSv4.1, that the session is set up.
+If the rpcsec_gss_krb5 module cannot be loaded, the attempt to create
+an rpc_client in nfs4_init_client will currently fail with an EINVAL.
+Fix is to retry with AUTH_NULL.
+
+Regression introduced by the commit "NFS: Use "krb5i" to establish NFSv4
+state whenever possible"
+- Ensure that we exit with ENOENT if the call to ops->get_clid_cred()
+  fails.
+- Handle the case where ops->detect_trunking() exits with an
+  unexpected error, and return EIO.
+The expected behaviour is that the client will decide at mount time
+whether or not to use a krb5i machine cred, or AUTH_NULL.
+When the private data is given away the gss context also needs to go,
+because the caller may destroy it, such as when the context is exported
+into a lucid context to hand it to the kernel.
+When using GSSAPI's gss_krb5_export_lucid_context the context passed into the
+function is actually deleted during the export (to avoid reuse as the context
+contains state that depends on its usage).
+Change the code to pass in a pointer to the context so that it can be properly
+NULLed if we are using the GSSAPI context and following calls to
+gss_delete_sec_context will not cause double free errors and segfaults.
+When we send a RENEW or SEQUENCE operation in order to probe if the
+lease is still valid, we want it to be able to time out since the
+lease we are probing is likely to time out too. Currently, because
+we use soft mount semantics for these RPC calls, the return value
+is EIO, which causes the state manager to exit with an "unhandled
+error" message.
+This patch changes the call semantics, so that the RPC layer returns
+ETIMEDOUT instead of EIO. We then have the state manager default to
+a simple retry instead of exiting.
+This will later allow NFS locking code to wait for readahead to complete
+before releasing byte range locks.
+
+memory allocated by kmem_cache_alloc() should be freed using
+kmem_cache_free(), not kfree().
+by passing these flags to NFSv4 open request. Also make it return
+-EBUSY on share conflicts with other opens.
+
+that maps them into O_DENY flags and make them visible for
+applications that use O_DENYMAND opens.
+Construct share_access value from O_DENY* flags and send it to
+the server.
+forcemand mount option now lets us use Windows mandatory style of
+byte-range locks even if server supports posix ones - switches on
+Windows locking mechanism. Share flags is another locking mehanism
+provided by Windows semantic that can be used by NT_CREATE_ANDX
+command. This patch combines all Windows locking mechanism in one
+mount option by using NT_CREATE_ANDX to open files if forcemand is on.
+and simplify CIFSSMBOpen params.
+This patch adds 3 flags:
+1) O_DENYREAD that doesn't permit read access,
+2) O_DENYWRITE that doesn't permit write access,
+3) O_DENYDELETE that doesn't permit delete or rename,
+
+Network filesystems CIFS, SMB2.0, SMB3.0 and NFSv4 have such flags -
+this change can benefit cifs and nfs modules as well as Samba and
+NFS file servers that export the same directory for Windows clients,
+or Wine applications that access the same files simultaneously.
+
+These flags are only take affect for opens on mounts with 'sharelock'
+mount option. They are translated to flock's flags:
+
+and set through flock_lock_file on a file. If the file can't be locked
+due conflicts with another open with O_DENY* flags, the -EBUSY error
+code is returned.
+
+Create codepath is slightly changed to prevent data races on
+newely created files: when open with O_CREAT can return with -EBUSY
+error for successfully created files due to a deny lock set by
+another task.
+1/2: "noaccesscheck" mount option
+
+     If this option is enabled, the nfs client will not send any
+     NFS ACCESS calls to the server, except for UID 0. For all other
+     uids, access is checked locally using generic_permission().
+
+2/2: "sloppycto=N" mount option
+
+     This mount option is a bit like like "nocto" - it suppresses
+     a GETATTR call when a file is opened if we still have valid
+     attribute data in the cache. The difference is that 1) we
+     only do this for files that are opened read-only and 2) only
+     when the last attribute update was 'N' seconds or less ago.
+Bryan recently added SECINFO support, and I've beefed up the NFSv3
+MNT processing in kernel to do some security flavor negotiation.
+
+Thus the kernel can perform additional security flavor negotiation
+now.  Update the description of the sec= mount option and the
+SECURITY CONSIDERATIONS section to reflect this change.
+Don't hold the NFSv4 sequence id while we check for open permission.
+The call to ACCESS may block due to reboot recovery.
+
+
+Pass this struct by reference, not by value, and return an error instead
+of a boolean to allow for future additions.
+
+
+The replay_owner will never be used in the sessions case.
+A 4.1 server must notify a client that has had any state revoked using
+the SEQ4_STATUS_RECALLABLE_STATE_REVOKED flag.  The client can figure
+out exactly which state is the problem using CHECK_STATEID and then free
+it using FREE_STATEID.  The status flag will be unset once all such
+revoked stateids are freed.
+
+Our server's only recallable state is delegations.  So we keep with each
+4.1 client a list of delegations that have timed out and been recalled,
+but haven't yet been freed by FREE_STATEID.
+
+In the 4.1 case we're supposed to release lockowners as soon as they're
+no longer used.
+
+It would probably be more efficient to reference count them, but that's
+slightly fiddly due to the need to have callbacks from locks.c to take
+into account lock merging and splitting.
+
+For most cases just scanning the inode's lock list on unlock for
+matching locks will be sufficient.
+
+Negotiation of the 4.1 session forechannel attributes is a mess.  Fix:
+
+	- Move it all into check_forechannel_attrs instead of spreading
+	  it between that, alloc_session, and init_forechannel_attrs.
+	- set a minimum "slotsize" so that our drc memory limits apply
+	  even for small maxresponsesize_cached.  This also fixes some
+	  bugs when slotsize becomes <= 0.
+
+Don't actually close any opens until we don't need them at all.
+
+This means being left with write access when it's not really necessary,
+but that's better than putting a file that might still have posix locks
+held on it, as we have been.
+
+The logic here is better expressed with a switch statement.
+
+While we're here, CLOSED stateids (or stateids of an unkown type--which
+would indicate a server bug) should probably return nfserr_bad_stateid,
+though this behavior shouldn't affect any non-buggy client.
+
+More logic that's unnecessary in the 4.1 case.
+
+Make sure the client gives us an adequate backchannel.
+the  is aways true ,
+so we remove it.
+GSSAPI can be given a uid number as a special name, and then
+gss_acquire_cred() can use the name to try to find credentials for
+the user.
+
+Give GSSAPI a chance to do it on its own, then fallback to the classic
+method of trolling through the file system to find a credential cache.
+
+This patch uses a little know feature of GSSAPI that permits to acquire
+crdentials specifying the user's UID. Normally GSSAPI will simply perform
+a getpwuid() call and use the user name to generate a principal name and
+then see if it can find a TGT for that principal in the local ccache.
+
+This feature is vital to allow the GSS-Proxy to be able to initiate crdentials
+on behalf of rpc.gssd using client keytabs stored in the filsystem.
+
+GSS-Proxy works through an interposer-type plugin (new feature in MIT 1.11)
+that allows to intercept all GSSAPI requestes and relay them to a system
+daemon via a socket. This daemon (GSS-Proxy) then can perform operations on
+behalf of other applications with additional logic.
+
+In the rpc.gssd case the GSS-Proxy daemon allows applications running as
+system users to properly access krb5 protected shares by creating a credential
+cache on the fly when necessary.
+
+This way all applications that need access to krb5 protected shares do not need
+to be taught how to initiate crdentials on their own, nor they need to be
+wrapped in additional init scripts like k5start or use wasteful cronjobs to
+keep credentials fresh. All is needed is to drop a keytab with the right keys
+in a special location on the system and gss-proxy will do the rest.
+The second check was added in commit 65b62a29 but it will never be true.
+Commit 91bb95f2689e84856ecdf6fac365489d36709cf9
+   4set_root: force "fsid=0" for all exports of '/'
+
+set NFSEXP_FSID for the export of "/" if nothing else had any fsid set,
+however it didn't also set the flag for all security flavours.  So the
+kernel complains that the flags on the security flavours don't match and
+it rejects the export.
+
+So call fix_pseudoflavor_flags() in write_secinfo() to make sure that
+any fiddling that has been done to e_flags gets copied to e_secinfo.
+wrote:
+
+ This bug seems to be present in v2.6.37 or lower versions. The code was
+ re-organized in v2.6.38 that eliminated the bug. Current upstream code
+ doesn't have this bug. This may be applicable to some longterm releases!
+ 
+ Here are the bug details:
+ 
+ 1. nfs_read_rpcsetup(), args.count and res.count are both set to the
+    actual number of bytes to be read. Let us assume that the request is
+    for 16K, so arg.count = res.count = 16K
+ 2. nfs3_xdr_readres() conditionally sets res.count to to the actual
+    number of bytes read. This condition is true for the first response
+    as res.count was set to args.count before the first request. Let us
+    say the server returned only 4K bytes. res.count=4K
+ 3. Another read request is sent for the remaining data. Note that
+    res.count is NOT updated. It is still set to the actual amount of
+    bytes we got in the first response.  The client will send a READ
+    request for the remaining 12K.
+
+This is looks like a real bug, but I think the "NOT" above is the best thing
+to fix.
+i.e. when another read request is set, res.count *SHOULD*BE* updated.  That
+makes it consistent with the original send, and consistency is good!
+
+So this patch.
+
+
+
+This would old affect clients with servers which would sometimes return
+partial reads, and I don't think the Linux NFS server does.  What server have
+you seen this against?
+
+NeilBrown
+
+
+
+ 4. Assume that the server gave all 12K bytes. We still think we got ony
+    4K bytes due to conditional update in nfs3_xdr_readres(). The client
+    sends further requests, if not EOF! If this response includes EOF, it
+    truncates pages beyond 4K+4K causing data corruption beyond 8K. The
+    corrupted data is filled with zeros!
+ the  is aways true ,
+so we remove it.
+This patch remove the ability of negotiating to the v2
+protocol. Explicitly setting the version on the command
+line will be the only way to use v2.
+Currently, _nfs4_do_setattr() will use the delegation stateid if no
+writeable open file stateid is available.
+If the server revokes that delegation stateid, then the call to
+nfs4_handle_exception() will fail to handle the error due to the
+lack of a struct nfs4_state, and will just convert the error into
+an EIO.
+
+This patch just removes the requirement that we must have a
+struct nfs4_state in order to invalidate the delegation and
+retry.
+A NFS client should be able to work properly even if the DNS Reverse
+record for the server is not set. This means a DNS lookup should not be done on
+server names at are passed to GSSAPI. This patch changes the default behavior
+to no longer do those types of lookups
+
+This change default behavior could negatively impact some current environments,
+so the -D option is also being added that will re-enable the DNS reverse
+looks on server names, which are passed to GSSAPI.
+Marc Eshel reports that using the -v command line option on the
+sm-notify command stopped working after nfs-utils 1.2.2, when IPv6
+support was added.  If nfs-utils is built without IPv6 support, it
+still works.  Marc specified a hostname with a single A record.
+
+smn_bind_address() must construct a bind address with the same
+family as the RPC socket's protocol family.  Add an AI_V4MAPPED hint
+so an appropriate IPv6 bind address is constructed even if -v
+specifies an IPv4 presentation address, or a hostname with only IPv4
+mappings.
+
+We still use an IPv4 bind address if IPv6 support is compiled out or
+the host does not support IPv6.
+If we're cross-compiling, we can't do a runtime test of sqlite,
+so just assume that the user has a good enough version rather
+than falling over.
+This patch ensures that we throttle new RPC requests if there are
+requests already waiting in the xprt->backlog queue. The reason for
+doing this is to fix livelock issues that can occur when an existing
+(high priority) task is waiting in the backlog queue, gets woken up
+by xprt_free_slot(), but a new task then steals the slot.
+The is mainly for use by NFSv4.1, since the session negotiation
+ultimately decides how many RPC slots we are able to use.
+This ensures that the RPC layer doesn't override the NFS session
+negotiation.
+This patch ensures that we throttle new RPC requests if there are
+requests already waiting in the xprt->backlog queue. The reason for
+doing this is to fix livelock issues that can occur when an existing
+(high priority) task is waiting in the backlog queue, gets woken up
+by xprt_free_slot(), but a new task then steals the slot.
+This is mainly for use by NFSv4.1, where the session negotiation
+ultimately wants to decide how many RPC slots we can fill.
+This ensures that the RPC layer doesn't override the NFS session
+negotiation.
+On Tue, Apr 09, 2013 at 07:58:05PM -0400, J. Bruce Fields wrote:
+ The following close off 3 remaining 4.1 todo's and fix some
+ miscellaneous bugs and ugliness along the way.
+ 
+ I had two more todo's in mind before considering 4.1 no longer
+ experimental and turn it on by default:
+ 
+ 	- AUTH_GSS for the backchannel
+ 	- SP4_MACH_CRED state protection
+ 
+ In theory they're both mandatory, but I think I may just go ahead
+ without them, after making sure we return reasonable errors in both
+ cases and so on.
+ 
+ The last patch (implementing SEQ4_STATUS_RECALLABLE_STATE_REVOKED)
+ hasn't gotten any real testing--I need to write a pynfs test for the
+ TEST_STATEID/FREE_STATEID behavior.  So that may still need some more
+ revisions.
+
+Sure enough.... A revised patch is appended.
+
+I've also added a pynfs test, and pushed out the result to
+
+Along the way I noticed pynfs was using an out-of-date nfs4.x (which was
+missing an error needed in this case) and had a crucial CB_SEQUENCE bug
+(how did we not notice it was responding with the wrong sequence id?).
+That (and another miscellaneous open/locking test) are included in the
+above.
+    nfsd4: implement SEQ4_STATUS_RECALLABLE_STATE_REVOKED
+    
+    A 4.1 server must notify a client that has had any state revoked using
+    the SEQ4_STATUS_RECALLABLE_STATE_REVOKED flag.  The client can figure
+    out exactly which state is the problem using CHECK_STATEID and then free
+    it using FREE_STATEID.  The status flag will be unset once all such
+    revoked stateids are freed.
+    
+    Our server's only recallable state is delegations.  So we keep with each
+    4.1 client a list of delegations that have timed out and been recalled,
+    but haven't yet been freed by FREE_STATEID.
+    
+In the gss-proxy case, setup time is when I know I'll have the right
+namespace for the connect.
+
+In other cases, it might be useful to get any connection errors
+earlier--though actually in practice it doesn't make any difference for
+rpcbind.
+
+We expose this parameter for a future caller.
+It will be used to extract the endtime from the gss-proxy upcall mechanism,
+in order to set the rsc cache expiration time.
+
+The main advantge of this new upcall mechanism is that it can handle
+big tickets as seen in Kerberos implementations where tickets carry
+authorization data like the MS-PAC buffer with AD or the Posix Authorization
+Data being discussed in IETF on the krbwg working group.
+
+The Gssproxy program is used to perform the accept_sec_context call on the
+kernel's behalf. The code is changed to also pass the input buffer straight
+to upcall mechanism to avoid allocating and copying many pages as tokens can
+be as big (potentially more in future) as 64KiB.
+In the gss-proxy case we don't want to have to reconnect at random--we
+want to connect only on gss-proxy startup when we can steal gss-proxy's
+context to do the connect in the right namespace.
+
+So, provide a flag that allows the rpc_create caller to turn off the
+idle timeout.
+This patch implements a sunrpc client to use the services of the gssproxy
+userspace daemon.
+
+In particular it allows to perform calls in user space using an RPC
+call instead of custom hand-coded upcall/downcall messages.
+
+Currently only accept_sec_context is implemented as that is all is needed for
+the server case.
+
+File server modules like NFS and CIFS can use full gssapi services this way,
+once init_sec_context is also implemented.
+
+For the NFS server case this code allow to lift the limit of max 2k krb5
+tickets. This limit is prevents legitimate kerberos deployments from using krb5
+authentication with the Linux NFS server as they have normally ticket that are
+many kilobytes large.
+
+It will also allow to lift the limitation on the size of the credential set
+(uid,gid,gids) passed down from user space for users that have very many groups
+associated. Currently the downcall mechanism used by rpc.svcgssd is limited
+to around 2k secondary groups of the 65k allowed by kernel structures.
+This patch adds support for UserModeHelper tracker in a container.
+The reason for this is that the only containerised tracker ("nfsdcld") is
+going to be removed in 3.10 kernel, thus at least one more tracker have to be
+containerised to replace the deprecated one.
+UMH tracker looks more preferable comparing to legacy since it's the latest
+one.
+To make UMH tracker work in a container, we have to make sure, that it
+executes right binary (i.e., this binary have to be taken from the container
+environment).
+But, UMH is a kernel thread, which works in global root environment by design
+(kernel thread's root is inherited from kthreadd, which in turn inherited it's
+root from global init). So, the root have to be swapped to the container's
+one before binary execution.
+
+This patch passes "init" callback and private "data" to UMH interface, which
+are used to swap root for spawned kernel thread.
+
+Note: container's root can be stored on stack, because UMH calls are
+synchronous.
+If we're doing NFSv4.1 against a server that has persistent sessions,
+then we should not need to call SETATTR in order to reset the file
+attributes immediately after doing an exclusive create.
+
+Note that since the create mode depends on the type of session that
+has been negotiated with the server, we should not choose the
+mode until after we've got a session slot.
+
+Reserve I_MUTEX_PARENT and I_MUTEX_CHILD for locking of actual
+directories.
+
+(Also I_MUTEX_QUOTA isn't really a meaningful name for this locking
+class any more; fixed in a later patch.)
+
+We'll be using dentry->d_inode in one more place.
+
+NFSv4 uses leases to guarantee that clients can cache metadata as well
+as data.
+
+We need to break delegations on any operation that changes the set of
+links pointing to an inode.  Start with unlink.
+
+Such operations also hold the i_mutex on a parent directory.  Breaking a
+delegation may require waiting for a timeout (by default 90 seconds) in
+the case of a unresponsive NFS client.  To avoid blocking all directory
+operations, we therefore drop locks before waiting for the delegation.
+The logic then looks like:
+
+	acquire locks
+	...
+	test for delegation; if found:
+		take reference on inode
+		release locks
+		wait for delegation break
+		drop reference on inode
+		retry
+
+It is possible this could never terminate.  (Even if we take precautions
+to prevent another delegation being acquired on the same inode, we could
+get a different inode on each retry.)  But this seems very unlikely.
+
+The initial test for a delegation happens after the lock on the target
+inode is acquired, but the directory inode may have been acquired
+further up the call stack.  We therefore add a "struct inode **"
+argument to any intervening functions, which we use to pass the inode
+back up to the caller in the case it needs a delegation synchronously
+broken.
+
+We'll need the same logic for rename and link.
+
+Implement NFSv4 delegations at the vfs level using the new FL_DELEG lock
+type.
+
+We want to do this elsewhere as well.
+I_MUTEX_QUOTA is now just being used whenever we want to lock two
+non-directories.  So the name isn't right.  I_MUTEX_NONDIR2 isn't
+especially elegant but it's the best I could think of.
+
+Also fix some outdated documentation.
+
+A read delegation is used by NFSv4 as a guarantee that a client can
+perform local read opens without informing the server.
+
+The open operation takes the last component of the pathname as an
+argument, thus is also a lookup operation, and giving the client the
+above guarantee means informing the client before we allow anything that
+would change the set of names pointing to the inode.
+
+Therefore, we need to break delegations on rename, link, and unlink.
+
+We also need to prevent new delegations from being acquired while one of
+these operations is in progress.
+
+We could add some completely new locking for that purpose, but it's
+simpler to use the i_mutex, since that's already taken by all the
+operations we care about.
+
+The single exception is rename.  So, modify rename to take the i_mutex
+on the file that is being renamed.
+
+Also fix up lockdep and Documentation/filesystems/directory-locking to
+reflect the change.
+
+For now FL_DELEG is just a synonym for FL_LEASE.  So this patch doesn't
+change behavior.
+
+Next we'll modify break_lease to treat FL_DELEG leases differently, to
+account for the fact that NFSv4 delegations should be broken in more
+situations than Windows oplocks.
+
+We again check for the EXDEV a little later on, so the first check is
+redundant.  This check is also slightly racier, since a badly timed
+eviction from the export cache could leave us with the two fh_export
+pointers pointing to two different cache entries which each refer to the
+same underlying export.
+
+It's better to compare vfsmounts as the later check does, but that
+leaves a minor security hole in the case where the two exports refer to
+two different directories especially if (for example) they have
+different root-squashing options.
+
+So, compare ex_path.dentry too.
+
+Cleanup a piece I forgot to remove in
+9411b1d4c7df26dca6bc6261b5dc87a5b4c81e5c 
+Fix to return a negative error code from the error handling
+case instead of 0, as returned elsewhere in this function.
+
+Fix to return a negative error code from the error handling
+case instead of 0, as returned elsewhere in this function.
+
+Fix to return a negative error code from the error handling
+case instead of 0, as returned elsewhere in this function.
+
+Fix to return a negative error code from the error handling
+case instead of 0, as returned elsewhere in this function.
+Sorry, my mail server got something wrong, those mail with title
+'[PATCH] svcauth_gss: fix error return code in rsc_parse()' are all the same, just
+dup sent by the mail server.
+
+Regards,
+
+Fix to return a negative error code from the error handling case instead of 0, as returned elsewhere in this function.
+commit 82cc2e61 (SVCAUTH_WRAP/SVCAUTH_UNWRAP) introduce a regression
+that causes callers of svc_getargs() to crash when svc_freeargs() frees
+args points that are allocated on the stack.
+
+svc_getargs() should let the callers do the freeing and not make any
+assumptions on the type of memory passed in.
+
+Also see:
+    https://bugzilla.redhat.com/show_bug.cgi?id=948378
+and
+    CVE-2013-1950 EMBARGOED rpcbind: invalid pointer free leads to crash
+A NFS client should be able to work properly even if the DNS Reverse
+record for the server is not set. This means a DNS lookup should not be
+done on server names at are passed to GSSAPI. This patch changes the default
+behavior to no longer do those types of lookups
+
+This change default behavior could negatively impact some current
+environments, so the -D option is also being added that will re-enable
+the DNS reverse looks on server names, which are passed to GSSAPI.
+A NFS client should be able to work properly even if the DNS Reverse
+record for the server is not set. This means a DNS lookup should not be
+done on server names at are passed to GSSAPI. This patch changes the default
+behavior to no longer do those types of lookups
+
+This change default behavior could negatively impact some current
+environments, so the -D option is also being added that will re-enable
+the DNS reverse looks on server names, which are passed to GSSAPI.
+
+RFC 3530 says that the seconds value of a nfstime4 structure is a 64bit
+value, but we are instead sending a 32-bit 0 and then a 32bit conversion
+of the 64bit Linux value.  This means that if we try to set atime to a
+value before the epoch (touch -t 196001010101) the client will only send
+part of the new value due to lost precision.
+The seconds field of an nfstime4 structure is 64bit, but we are assuming
+that the first 32bits are zero-filled.  So if the client tries to set
+atime to a value before the epoch (touch -t 196001010101), then the
+server will save the wrong value on disk.
+
+RFC 3530 says that the seconds value of a nfstime4 structure is a 64bit
+value, but we are instead sending a 32-bit 0 and then a 32bit conversion
+of the 64bit Linux value.  This means that if we try to set atime to a
+value before the epoch (touch -t 196001010101) the client will only send
+part of the new value due to lost precision.
+The seconds field of an nfstime4 structure is 64bit, but we are assuming
+that the first 32bits are zero-filled.  So if the client tries to set
+atime to a value before the epoch (touch -t 196001010101), then the
+server will save the wrong value on disk.
+Fix nfs4_select_rw_stateid() so that it chooses the open stateid
+(or an all-zero stateid) if the delegation does not match the selected
+read/write mode.
+
+Defensive patch to ensure that we copy the state->open_stateid, which
+can never be set to the delegation stateid.
+Idle notifier not registered if CONFIG_X86_32 is defined,
+those callbacks are empty for X86_32 platform.
+
+
+Make this work on X86_32 platforms by
+removing the restriction for X86_64
+According to commit e022e7eb9, the .enter == NULL is the last one in
+state_tables[].
+
+So just like intel_idle_cpuidle_driver_init(), in case of .enter == NULL,
+breaking the for(;;) loop directly.
+Currently, in intel_idle.c, there are 5 state_tables array, every
+array size is sizeof(struct cpuidle_state) * CPUIDLE_STATE_MAX.
+
+As in intel_idle_cpuidle_driver_init(), we have copied the data into
+intel_idle_driver->state[], so do not need to keep state_tables[]
+there any more after system init.
+
+It will save about 3~4k memory, also benefits mobile devices.
+Here changing them as __initdata, also removing global var
+cpuidle_state_table pointer.
+On 03/11/2013 11:44 AM, Chuansheng Liu wrote:
+ 
+ In function intel_idle_cpu_init() and intel_idle_cpuidle_driver_init(),
+ they are having the same for(;;) loop to count the -state_count.
+ 
+ Although intel_idle_cpu_init() can be called at runtime CPU HOTPLUG case,
+ but max_cstate can not be changed at runtime.
+ 
+ So the dev-state_count should be == drv-state_count, in the function
+ cpuidle_register_device() has done the initialization.
+ 
+ Here we can clean up these pieces of code.
+ The start/stop_critical_timings are called from arch/x86/kernel/process.c
+in the cpu_idle loop function.
+
+Remove the ones in the cpuidle driver.
+
+Adding myself as co-maintainer for the thermal subsystem.
+
+The agreed work split will be so that as a co-maintainer
+I will be taking care of platform thermal drivers, non-ACPI
+thermal drivers and making sure the thermal framework core
+code will continue to suffice the non-ACPI thermal needs.
+Update the Thermal subsystem MAINTAINERS entry by adding
+its patchwork link.
+Remove the shmobile_enter_wfi function which is the same as the
+common WFI enter function from the arm cpuidle driver defined
+with the ARM_CPUIDLE_WFI_STATE macro.
+Commit 688036b538974de32ce55be8b0e013b003992abc removed the function
+'shmobile_enter_wfi' but we forgot to remove the definition in the header file.
+
+Note this function is just an alias to 'cpu_do_idle()' wrapped into a cpuidle
+function callback prototype which already exists with the default WFI state
+and the arm_simple_enter function.
+
+Remove the function prototype.
+In a previous commit the en_core_tk_irqen flag has been added but we missed
+the cpuidle_wrap_enter which was doing the job to measure the time for the
+'omap3_enter_idle' function.
+
+Actually, I don't see any reason to use this wrapper in the code. In the better
+case, the time computation is not correctly done because of the different
+operations done in omap3_enter_idle_bm which were not taken into account
+before the en_core_tk_irqen flag was set.
+
+As the time is reflected for the state overridden by the omap3_enter_idle_bm,
+using the wrapper is pointless now, so removing it.
+The en_core_tk_irqen flag is set in all the cpuidle driver which
+means it is not necessary to specify this flag.
+
+Remove the flag and the code related to it.
+All the drivers are using, in their initialization function, the
+for_each_possible_cpu macro.
+
+Using for_each_online_cpu means the driver must handle the initialization
+of the cpuidle device when a cpu is up which is not the case here.
+
+Change the macro to for_each_possible_cpu as that fix the hotplug
+initialization and make the initialization routine consistent with the
+rest of the code in the different drivers.
+The usual scheme to initialize a cpuidle driver on a SMP is:
+this code is duplicated in each cpuidle driver.
+
+On UP systems, it is done this way:
+
+On UP, the macro 'for_each_cpu' does one iteration:
+
+Hence, the initialization loop is the same for UP than SMP.
+
+Beside, we saw different bugs / mis-initialization / return code unchecked in
+the different drivers, the code is duplicated including bugs. After fixing all
+these ones, it appears the initialization pattern is the same for everyone.
+
+Please note, some drivers are doing dev->state_count = drv->state_count. This is
+not necessary because it is done by the cpuidle_enable_device function in the
+cpuidle framework. This is true, until you have the same states for all your
+devices. Otherwise, the 'low level' API should be used instead with the specific
+initialization for the driver.
+
+Let's add a wrapper function doing this initialization with a cpumask parameter
+for the coupled idle states and use it for all the drivers.
+
+That will save a lot of LOC, consolidate the code, and the modifications in the
+future could be done in a single place. Another benefit is the consolidation of
+the cpuidle_device variable which is now in the cpuidle framework and no longer
+spread accross the different arch specific drivers.
+Remove the duplicate code and use the cpuidle common code for initialization.
+Remove the duplicate code and use the arm cpuidle driver's common code
+for initialization.
+
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+Remove the duplicated code and use the cpuidle common code for initialization.
+The code intializes the cpuidle driver at different places.
+The cpuidle driver for :
+  * imx5 : is in the pm-imx5.c, the init function is in cpuidle.c
+  * imx6 : is in cpuidle-imx6q.c, the init function is in cpuidle.c
+           and cpuidle-imx6q.c
+
+Instead of having the cpuidle code spread across different files,
+let's create a driver for each SoC and use the common register function.
+Commit b51306c (PCI: Set device power state to PCI_D0 for device
+without native PM support) modified pci_platform_power_transition()
+by adding code causing dev->current_state for devices that don't
+support native PCI PM but are power-manageable by the platform to be
+changed to PCI_D0 regardless of the value returned by the preceding
+platform_pci_set_power_state().  In particular, that also is done
+if the platform_pci_set_power_state() has been successful, which
+causes the correct power state of the device set by
+pci_update_current_state() in that case to be overwritten by PCI_D0.
+
+Fix that mistake by making the fallback to PCI_D0 only happen if
+the platform_pci_set_power_state() has returned an error.
+
+ Commit b51306c (PCI: Set device power state to PCI_D0 for device
+ without native PM support) modified pci_platform_power_transition()
+ by adding code causing dev-current_state for devices that don't
+ support native PCI PM but are power-manageable by the platform to be
+ changed to PCI_D0 regardless of the value returned by the preceding
+ platform_pci_set_power_state().  In particular, that also is done
+ if the platform_pci_set_power_state() has been successful, which
+ causes the correct power state of the device set by
+ pci_update_current_state() in that case to be overwritten by PCI_D0.
+
+ Fix that mistake by making the fallback to PCI_D0 only happen if
+ the platform_pci_set_power_state() has returned an error.
+As per the OPP library documentation(Documentation/power/opp.txt) all
+opp find/get calls should be protected by rcu locks.
+
+ If of_find_node_by_path() returns NULL, there will be a NULL pointer
+ dereference.
+
+ of_node_put() should be called on np before returning.
+ Also, the reference count of the parent node should be decremented as well.
+
+ These comments apply to the below function dt_get_transition_latency() too.
+
+Thanks Francesco.
+
+Below fixes this (I will send it separately to Rafael):
+
+Subject: [PATCH 1/2] cpufreq: ARM big LITTLE: put DT nodes after using them
+
+DT nodes should be put using of_node_put() to balance their usage counts. This
+is not done properly in ARM's big LITTLE driver. Fix it.
+DT nodes should be put using of_node_put() to balance their usage counts. This
+is not done properly in ARM's big LITTLE driver. Fix it.
+This driver isn't updated to work with latest cpufreq core updates that happened
+recently. Fix them.
+Parent node must be put after using it to balance its usage count. This was
+missing in cpufreq-cpu0 driver. Fix it.
+In order to split the pm code from the cpuidle driver, add an ops for the
+standby function which will be initialized by the pm init functions directly,
+thus no need of the SoC specific headers.
+
+Cleanup also the headers included in this file as they are no longer needed.
+We don't have any dependency with the SoC specific code.
+
+Move the driver to the drivers/cpuidle directory.
+
+Add Nicolas Ferre as author of the driver, so it will be in copy of the emails.
+On 15 April 2013 21:37, Dirk Brandewie <dirk.brandewie@gmail.com wrote:
+ If the intel_pstate driver is being used __cpufreq_governor() should NOT be
+ called intel_pstate does not implement the target() callback.
+
+ Nathan's commit 5800043b2 changed the fence around the call to
+ __cpufreq_governor() in __cpufreq_remove_dev() here is the relevant hunk.
+
+No it isn't.
+
+As it has taken care of this limitation.
+
+BUT some of my earlier patches haven't. :(
+Here is the fix (Sedat please try this and give your tested-by, use the attached
+patch as gmail might break what i am copying in mail)..
+
+Sorry for being late in fixing this issue, i am still down with Tonsil infection
+and fever.. Today only i got some power to fix it after seeing Dirk's mail.
+
+Your tested-by may help me to recover quickly :)
+
+@Rafael: I will probably be down for one more week and so not doing any
+reviews for now... I do check important mails sent directly to me though.
+
+
+
+Some cpufreq drivers implement their own governor and so don't need us to call
+generic governors interface via __cpufreq_governor(). Few recent commits haven't
+obeyed this law well and we saw some regressions.
+
+This patch tries to fix this issue.
+commit 6d191a5fc7a969d972f1681e1c23781aecb06a61
+(regulator: core: Don't defer probe if there's no DT binding for a supply)
+
+Attempted to differentiate between regulator_get() with an actual
+DT binding for the supply and when there is none to avoid unnecessary
+deferal.
+However, ret value supplied by regulator_dev_lookup() is being
+ignored by regulator_get(). So, exit with the appropriate return value.
+
+Devfreq core runtime suspend/resume of a device is explicitly
+handled by devfreq driver using devfreq_suspend_device() and
+devfreq_resume_device() apis typically called from runtime
+suspend/resume callbacks. This patch aims to take away this
+from devfreq drivers and handle it from runtime-pm core. So
+that devfreq core runtime suspend/resume of a device is
+automatically done with runtime pm suspend/resume. The devfreq
+drivers shouldn't be concerned on when to suspend/resume the
+devfreq.
+
+This patch is targeted to handle devfreq core load monitoring
+runtime suspend/resume only. Not the actual hardware itself.
+All the resources like clocks and regulators must still be
+handled by device driver using runtime-pm. The sequence of
+devfreq and device runtime suspend/resume is,
+
+pm_runtime_suspend(dev) will first suspend device devfreq
+(if available) before device is suspended to ensure devfreq load
+monitoring is stopped and no device resources like clocks are
+accessed while device suspend is in progress.
+
+pm_runtime_resume(dev) will resume device devfreq(if available)
+after device is resumed to ensure device resources like clocks
+are ready for use.
+
+As devfreq runtime suspend/resume is done automatically from runtime
+core, this patch removes the existing devfreq_suspend_device() and
+devfreq_resume_device() apis.
+The driver is a global static variable automatically initialized to zero.
+
+Removing the useless initialization in the init function.
+The CPUIDLE_DRIVER_STATE_START constant is only set when the kernel compilation
+option CONFIG_ARCH_HAS_CPU_RELAX is set, but this is only relatated to x86, so
+it is always zero.
+
+Remove the reference to this constant in the code.
+Like all the other drivers, let's initialize the structure a compile time
+instead of init time.
+
+The states #1 and #2 are not enabled by default. The init function will
+check the features of the board in order to enable the state.
+Registering the driver, or the device, can fail, let's check the return code
+and return the error code to the PM layer.
+
+We build all the thermal governors into thermal module,
+thus a couple of APIs should be cleaned up as they are used
+by thermal governors only.
+
+Cleanup for get_tz_trend(), get_thermal_instance(),
+and thermal_cdev_update(), in this patch.
+As this code is not a module nor a platform device driver,
+this patch removes some unused header files.
+
+Remove unnecessary white spaces.
+Simple fixes for making kernel_doc happy about
+struct cpufreq_cooling_device. Includes also a minor
+spelling fix.
+Restrict the usage to GPL modules.
+level will be used only if GET_FREQ mode is requested.
+There is no potential harm with current code. But for
+cleaning the compilation log, this patch initializes
+level to zero.
+Update documentation for is_cpufreq_valid function so
+that kernel-doc does not complain about return value.
+As this is one of the central functions of this file,
+it deserves a proper documentation. This patch improves
+the existing comment to format it as a kernel-doc style.
+Improve code readiness by remove checkpatch.pl warnings
+on get_property function.
+There are at least three patterns for oneline comments in this
+file. This patch changes them to one single pattern
+Just for code readiness, this patch makes all functions
+on this file to have a blank line before their returns.
+Now, some functions follow this pattern, and others will
+not have a blank line. So, this patch makes it a single
+pattern.
+
+Remove unnecessary blank line.
+Fix kernel-doc warning on get_cpu_frequency and improve
+documentation comments.
+Update kernel-doc comments for cpufreq_apply_cooling function.
+Update kernel-doc comment and documentation for cpufreq_thermal_notifier.
+
+There is no support for hotplug or any other means of reducing
+temperature. So, this patch removes these references from Kconfig.
+Simple code style fix.
+
+Add documentation for cpufreq_get_cooling_level. As this
+is an exported function, it has to be documented.
+Update documentation for cpufreq_get_max_state callback.
+
+Update documentation for cpufreq_set_cur_state callback.
+Update documentation for cpufreq_get_cur_state callback.
+Add proper documentation for exported function cpufreq_cooling_register.
+Limit the amount of bytes written to dev_name by
+secure writing with snprintf.
+Just for style purposes, remove extra curl brackets.
+Update comments for this exported function.
+The list is needed so far. Thus removing it.
+Add cpu_cooling.h to thermal entry in MAINTAINERS.
+Remove defines that are not in used.
+To improve code readiness, change the way the lines
+are broken in this file.
+Improve code readiness by changing alignments so that
+they match open parenthesis, like checkpatch.pl --strict
+suggests.
+
+There is an additional HSW CPU-id, 0x46,
+which has C-states exactly like CPU-id 0x45.
+There is an additional HSW CPU-id, 0x46,
+which has C-states exactly like CPU-id 0x45.
+clk_{un}prepare APIs are required to migrate to common
+clock framework. While at it convert to use devm_clk_get as
+it removes some cleanup code.
+Added compatible string for Exynos4412 SoC.
+Some 85xx silicons like MPC8536 and P1022 have a JOG feature, which provides
+a dynamic mechanism to lower or raise the CPU core clock at runtime.
+
+This patch adds the support to change CPU frequency using the standard
+cpufreq interface. The ratio CORE to CCB can be 1:1(except MPC8536), 3:2,
+2:1, 5:2, 3:1, 7:2 and 4:1.
+
+Two CPU cores on P1022 must not in the low power state during the frequency
+transition. The driver uses a atomic counter to meet the requirement.
+
+The jog mode frequency transition process on the MPC8536 is similar to
+the deep sleep process. The driver need save the CPU state and restore
+it after CPU warm reset.
+
+Note:
+ * The I/O peripherals such as PCIe and eTSEC may lose packets during
+   the jog mode frequency transition.
+ * The driver doesn't support MPC8536 Rev 1.0 due to a JOG erratum.
+   Subsequent revisions of MPC8536 have corrected the erratum.
+cpufreq-cpu0 uses regulator_set_voltage_tol() API
+to set CPU regulator voltage to some narrow range around OPP voltage.
+It creates an issue if CPU regulator device has other consumers,
+because their request doesn't overlap with cpufreq's one.
+Normally cpufreq should constrain only lower voltage limit,
+so other consumers have a chance to set their own constraints.
+
+Use regulator_set_voltage_min() API to limit minimum voltage.
+Remove a voltage tolerance parameter as redundant.
+Sometimes it is a need to constrain only a minimum voltage
+and let system constraints to limit maximum.
+Add a new function regulator_set_voltage_min() for this.
+TMU is now supported with a exynos4 common clock framework.
+"tmu_apbif" clock has been defined with a common clock framework.
+This patch modifies exynos_thermal.c file to use clk_disable_unprepare()
+and clk_prepare_enable() instead of clk_{enable|disable}.
+Device tree support for TMU at Exynos4x12 targets.
+TMU probe function now checks for a device tree defined regulator.
+For compatibility reasons it is allowed to probe driver even without
+this regulator defined.
+Enable TMU support for Exynos4412 based target with device tree.
+Proper description for Exynos4 bindings added to Documentation/devicetree/
+bindings

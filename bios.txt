@@ -1,0 +1,2344 @@
+
+
+An AAString object allows efficient storage
+and manipulation of a long amino acid sequence.
+
+
+
+ CCODDS 
+
+  AA_ALPHABET
+  a <- AAString("MARKSLEMSIR*")
+  length(a)
+  alphabet(a)
+
+
+
+ CCODDE 
+
+Named character vector mapping single-letter amino acid representations
+to 3-letter amino acid representations.
+
+
+
+ CCODDS 
+
+  AMINO_ACID_CODE
+
+  aa <- AAString("LANDEECQW")
+  AMINO_ACID_CODE[strsplit(as.character(aa), NULL)[[1]]]
+
+
+
+ CCODDE 
+
+The  and  classes are
+containers for storing an aligned .
+
+
+
+ CCODDS 
+
+  pattern <- AAString("LAND")
+  subject <- AAString("LEAVES")
+  nw1 <- pairwiseAlignment(pattern, subject, substitutionMatrix = "BLOSUM50", gapOpening = -3, gapExtension = -1)
+  alignedPattern <- pattern(nw1)
+  unaligned(alignedPattern)
+  aligned(alignedPattern)
+  as.character(alignedPattern)
+  nchar(alignedPattern)
+
+
+
+ CCODDE 
+
+The BOCSubjectString and BOC2SubjectString classes are
+experimental and might not work properly.
+
+Please DO NOT TRY TO USE them for now. Thanks for your comprehension!
+
+
+
+
+
+Biostrings objects, classes and methods that are not intended to
+be used directly.
+
+
+
+
+
+A DNAString object allows efficient storage
+and manipulation of a long DNA sequence.
+
+
+
+ CCODDS 
+
+  DNA_BASES
+  DNA_ALPHABET
+  d <- DNAString("TTGAAAA-CTC-N")
+  length(d)
+  alphabet(d)                 
+  alphabet(d, baseOnly=TRUE)  
+
+
+
+ CCODDE 
+
+Two predefined objects ( and )
+that represent The Standard Genetic Code.
+
+
+
+ CCODDS 
+
+  GENETIC_CODE
+  GENETIC_CODE[["ATG"]]  
+  sort(table(GENETIC_CODE))  
+                             
+
+  RNA_GENETIC_CODE
+  all(GENETIC_CODE == RNA_GENETIC_CODE)  
+
+
+
+ CCODDE 
+
+Seventy one known HNF4alpha binding sequences
+
+
+
+ CCODDS 
+
+  data(HNF4alpha)
+  HNF4alpha
+
+
+
+ CCODDE 
+
+The  named character vector contains the mapping from
+the IUPAC nucleotide ambiguity codes to their meaning.
+
+The  function provides the reverse mapping.
+
+
+
+ CCODDS 
+
+  IUPAC_CODE_MAP
+  some_iupac_codes <- c("R", "M", "G", "N", "V")
+  IUPAC_CODE_MAP[some_iupac_codes]
+  mergeIUPACLetters(IUPAC_CODE_MAP[some_iupac_codes])
+
+  mergeIUPACLetters(c("Ca", "Acc", "aA", "MAAmC", "gM", "AB", "bS", "mk"))
+
+
+
+ CCODDE 
+
+The  class is a container for storing insertion and deletion
+information.
+
+
+
+
+
+The MIndex class is the basic container for storing the matches of
+a set of patterns in a subject sequence.
+
+
+
+ CCODDS 
+
+
+
+
+ CCODDE 
+
+The MaskedBString, MaskedDNAString, MaskedRNAString and MaskedAAString
+classes are containers for storing masked sequences.
+
+All those containers derive directly (and with no additional slots)
+from the MaskedXString virtual class.
+
+
+
+ CCODDS 
+
+  mask0 <- Mask(mask.width=29, start=c(3, 10, 25), width=c(6, 8, 5))
+  x <- DNAString("ACACAACTAGATAGNACTNNGAGAGACGC")
+  length(x)  
+  nchar(x)   
+  masks(x) <- mask0
+  x
+  length(x)  
+  nchar(x)   
+  gaps(x)
+
+  example(MaskCollection, package="IRanges")
+
+  masks(x) <- mymasks
+  x
+  alphabetFrequency(x)
+
+  active(masks(x)) <- FALSE
+  x
+
+  active(masks(x))["C"] <- TRUE
+  x
+
+  as(x, "Views")
+
+  masks(x) <- NULL
+  x
+  alphabetFrequency(x)
+
+
+
+
+
+ CCODDE 
+
+The MultipleAlignment class is a container for storing multiple sequence
+alignments.
+
+
+
+ CCODDS 
+
+origMAlign <-
+  readDNAMultipleAlignment(filepath =
+                           system.file("extdata",
+                                       "msx2_mRNA.aln",
+                                       package="Biostrings"),
+                           format="clustal")
+
+rownames(origMAlign)
+
+rownames(origMAlign) <- c("Human","Chimp","Cow","Mouse","Rat",
+                          "Dog","Chicken","Salmon")
+origMAlign
+
+if (interactive()) {
+detail(origMAlign)
+}
+
+rowMasked <- origMAlign
+rowmask(rowMasked) <- IRanges(start=1,end=3)
+rowMasked
+
+rowmask(rowMasked) <- NULL
+rowMasked
+
+rowmask(rowMasked, invert=TRUE) <- IRanges(start=4,end=7)
+rowMasked
+
+rowmask(rowMasked, append="intersect") <- IRanges(start=1,end=5)
+rowMasked
+
+tataMasked <- maskMotif(origMAlign, "TATA")
+colmask(tataMasked)
+
+autoMasked <- maskGaps(origMAlign, min.fraction=0.5, min.block.width=4)
+colmask(autoMasked)
+autoMasked
+
+alphabetFrequency(autoMasked)
+consensusMatrix(autoMasked, baseOnly=TRUE)[, 84:90]
+
+consensusString(autoMasked)
+consensusViews(autoMasked)
+
+sdist <- stringDist(as(autoMasked,"DNAStringSet"), method="hamming")
+clust <- hclust(sdist, method = "single")
+plot(clust)
+fourgroups <- cutree(clust, 4)
+fourgroups
+
+write.phylip(x = autoMasked, filepath = tempfile("foo.txt",tempdir()))
+
+
+
+
+ CCODDE 
+
+The PDict class is a container for storing a preprocessed dictionary of DNA
+patterns that can later be passed to the  function
+for fast matching against a reference sequence (the subject).
+
+ is the constructor function for creating new PDict objects.
+
+
+
+ CCODDS 
+
+  library(drosophila2probe)
+  dict0 <- DNAStringSet(drosophila2probe)
+  dict0                                
+  length(dict0)                        
+  unique(nchar(dict0))                 
+
+  pdict0 <- PDict(dict0)               
+                                       
+  pdict0
+  class(pdict0)
+  length(pdict0)                       
+  tb.width(pdict0)                     
+                                       
+  sum(duplicated(pdict0))
+  table(patternFrequency(pdict0))      
+  pdict0[[1]]
+  pdict0[[5]]
+
+  dict1 <- c("ACNG", "GT", "CGT", "AC")
+  pdict1 <- PDict(dict1, tb.end=2)
+  pdict1
+  class(pdict1)
+  length(pdict1)
+  width(pdict1)
+  head(pdict1)
+  tb(pdict1)
+  tb.width(pdict1)
+  width(tb(pdict1))
+  tail(pdict1)
+  pdict1[[3]]
+
+
+
+ CCODDE 
+
+The  class is a container for storing
+a set of pairwise alignments.
+
+The  class is a container for storing
+a set of pairwise alignments with a single subject.
+
+The  class is a container for storing
+the summary of a set of pairwise alignments.
+
+
+
+ CCODDS 
+
+  PairwiseAlignments("-PA--W-HEAE", "HEAGAWGHE-E")
+  pattern <- AAStringSet(c("HLDNLKGTF", "HVDDMPNAL"))
+  subject <- AAString("SMDDTEKMSMKL")
+  nw1 <- pairwiseAlignment(pattern, subject, substitutionMatrix = "BLOSUM50",
+    gapOpening = -3, gapExtension = -1)
+  pattern(nw1)
+  subject(nw1)
+  aligned(nw1)
+  as.character(nw1)
+  as.matrix(nw1)
+  nchar(nw1)
+  score(nw1)
+  nw1
+
+
+
+ CCODDE 
+
+The  function writes a
+PairwiseAlignments object to a file.
+Only the pair format is supported at the moment.
+
+
+
+ CCODDS 
+
+pattern <- DNAString("CGTACGTAACGTTCGT")
+subject <- DNAString("CGTCGTCGTCCGTAA")
+x1 <- pairwiseAlignment(pattern, subject)
+x1
+writePairwiseAlignments(x1)
+writePairwiseAlignments(x1, block.width=10)
+
+x2 <- pairwiseAlignment(pattern, subject, type="global-local")
+x2  
+writePairwiseAlignments(x2)
+
+pattern <- DNAStringSet(c(myp1="ACCA", myp2="ACGCA", myp3="ACGGCA"))
+x3 <- pairwiseAlignment(pattern, subject)
+x3
+writePairwiseAlignments(x3)
+
+pattern <- c("TSPASIRPPAGPSSRPAMVSSRRTRPSPPGPRRPTGRPCCSAAPRRPQAT",
+             "GGWKTCSGTCTTSTSTRHRGRSGWSARTTTAACLRASRKSMRAACSRSAG",
+             "SRPNRFAPTLMSSCITSTTGPPAWAGDRSHE")
+subject <- c("TSPASIRPPAGPSSRRPSPPGPRRPTGRPCCSAAPRRPQATGGWKTCSGT",
+             "CTTSTSTRHRGRSGWRASRKSMRAACSRSAGSRPNRFAPTLMSSCITSTT",
+             "GPPAWAGDRSHE")
+pattern <- unlist(AAStringSet(pattern))
+subject <- unlist(AAStringSet(subject))
+pattern  
+subject  
+data(BLOSUM62)
+x4 <- pairwiseAlignment(pattern, subject,
+                        substitutionMatrix=BLOSUM62,
+                        gapOpening=-9.5, gapExtension=-0.5)
+x4
+writePairwiseAlignments(x4, Matrix="BLOSUM62")
+
+
+
+ CCODDE 
+
+The QualityScaledBStringSet class is a container for storing a
+ object with an  object.
+
+Similarly, the QualityScaledDNAStringSet (or QualityScaledRNAStringSet, or
+QualityScaledAAStringSet) class is a container for storing a 
+(or , or ) objects with
+an  object.
+
+
+
+ CCODDS 
+
+  x1 <- DNAStringSet(c("TTGA", "CTCN"))
+  q1 <- PhredQuality(c("*+,-", "6789"))
+  qx1 <- QualityScaledDNAStringSet(x1, q1)
+  qx1
+
+
+
+ CCODDE 
+
+An RNAString object allows efficient storage
+and manipulation of a long RNA sequence.
+
+
+
+ CCODDS 
+
+  RNA_BASES
+  RNA_ALPHABET
+  d <- DNAString("TTGAAAA-CTC-N")
+  r <- RNAString(d)
+  r
+  alphabet(r)                 
+  alphabet(r, baseOnly=TRUE)  
+
+  r == d  
+
+
+
+ CCODDE 
+
+The BString class is a general container for storing
+a big string (a long sequence of characters) and for making its
+manipulation easy and efficient.
+
+The DNAString, RNAString and AAString classes are
+similar containers but with the more biology-oriented purpose of storing
+a DNA sequence (DNAString), an RNA sequence (RNAString),
+or a sequence of amino acids (AAString).
+
+All those containers derive directly (and with no additional slots)
+from the XString virtual class.
+
+
+
+ CCODDS 
+
+  b <- BString("I am a BString object")
+  b
+  length(b)
+
+  subseq(b)
+  subseq(b, start=3)
+  subseq(b, start=-3)
+  subseq(b, end=-3)
+  subseq(b, end=-3, width=5)
+
+  b2 <- b[length(b):1]       
+
+  as.character(b2)
+
+  b2 == b                    
+  b2 == as.character(b2)     
+
+  b == b[1:length(b)]        
+  identical(b, 1:length(b))  
+
+
+
+
+ CCODDE 
+
+WARNING: This class is currently under development and might
+not work properly! Full documentation will come later.
+
+Please DO NOT TRY TO USE it for now. Thanks for your comprehension!
+
+
+
+
+
+Objects for storing string quality measures.
+
+
+
+ CCODDS 
+
+  PhredQuality(0:40)
+  SolexaQuality(0:40)
+  IlluminaQuality(0:40)
+
+  PhredQuality(seq(1e-4,0.5,length=10))
+  SolexaQuality(seq(1e-4,0.5,length=10))
+  IlluminaQuality(seq(1e-4,0.5,length=10))
+
+  x <- SolexaQuality(BStringSet(c(a="@ABC", b="abcd")))
+  as.matrix(x)
+
+
+
+ CCODDE 
+
+The BStringSet class is a container for storing a set of
+ objects and for making its manipulation
+easy and efficient.
+
+Similarly, the DNAStringSet (or RNAStringSet, or AAStringSet) class is
+a container for storing a set of 
+(or , or ) objects.
+
+All those containers derive directly (and with no additional slots)
+from the XStringSet virtual class.
+
+
+
+ CCODDS 
+
+  x0 <- c("#CTC-NACCAGTAT", "
+  width(x0)
+  x1 <- BStringSet(x0)
+  x1
+
+  BStringSet(x0, start=4, end=-3)
+  subseq(x1, start=4, end=-3)
+  BStringSet(subseq(x0, start=4, end=-3))
+
+  dna0 <- DNAStringSet(x0, start=4, end=-3)
+  dna0
+  names(dna0)
+  names(dna0)[2] <- "seqB"
+  dna0
+
+  library(hgu95av2probe)
+  x2 <- sample(hgu95av2probe$sequence, 999000, replace=TRUE)
+  dna2a <- DNAStringSet(x2)
+  dna2b <- DNAStringSet(factor(x2))  
+  object.size(dna2a)
+  object.size(dna2b)
+
+  x3 <- "abcdefghij"
+  BStringSet(x3, start=2, end=6:2)  
+  BStringSet(x3, start=-(1:6))
+  x4 <- BString(x3)
+  BStringSet(x4, end=-(1:6), width=3)
+
+  extractRandomReads <- function(subject, nread, readlength)
+  {
+      if (!is.integer(readlength))
+          readlength <- as.integer(readlength)
+      start <- sample(length(subject) - readlength + 1L, nread,
+                      replace=TRUE)
+      DNAStringSet(subject, start=start, width=readlength)
+  }
+  library(BSgenome.Celegans.UCSC.ce2)
+  rndreads <- extractRandomReads(Celegans$chrI, 1000000, 40)
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  probes
+
+  RNAStringSet(probes, start=2, end=-5)  
+
+  probes10 <- head(probes, n=10)
+  set.seed(33)
+  shuffled_nucleotides <- lapply(probes10, sample)
+  shuffled_nucleotides
+
+  DNAStringSet(shuffled_nucleotides)  
+
+  set.seed(33)
+  endoapply(probes10, sample)
+
+  subseq(probes, start=2, end=-5)
+
+  subseq(probes, start=13, end=13) <- "N"
+  probes
+
+  subseq(probes, start=1, end=0) <- "--"
+  probes
+  subseq(probes, end=2) <- ""
+  probes
+
+  subseq(probes, start=4:7, end=7) <- c("YYYY", "YYY", "YY", "Y")
+  subseq(probes, start=4, end=6) <- subseq(probes, start=-2:-5)
+  probes
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  unlist(probes)
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+
+  y <- subseq(probes[1:12], start=5)
+  probes@pool
+  y@pool
+  object.size(probes)
+  object.size(y)
+
+  y0 <- compact(y)
+  y0@pool
+  object.size(y0)
+
+
+
+ CCODDE 
+
+Methods for comparing and ordering the elements in one or more
+XStringSet objects.
+
+
+
+ CCODDS 
+
+
+library(drosophila2probe)
+fly_probes <- DNAStringSet(drosophila2probe)
+sum(duplicated(fly_probes))  
+
+is.unsorted(fly_probes)  
+fly_probes <- sort(fly_probes)
+is.unsorted(fly_probes)  
+is.unsorted(fly_probes, strictly=TRUE)  
+is.unsorted(unique(fly_probes), strictly=TRUE)  
+
+nb1 <- sum(reverseComplement(fly_probes) %in% fly_probes)
+stopifnot(identical(nb1, 455L))  
+
+library(hgu95av2probe)
+human_probes <- DNAStringSet(hgu95av2probe)
+m <- match(fly_probes, human_probes)
+stopifnot(identical(sum(!is.na(m)), 493L))  
+
+
+library(drosophila2probe)
+probes <- DNAStringSet(drosophila2probe)
+
+first5 <- narrow(probes, end=5)
+last5 <- narrow(probes, start=-5)
+nb2 <- sum(first5 == reverseComplement(last5))
+stopifnot(identical(nb2, 17L))
+
+100 * nb2 / length(probes)  
+
+100 / 4^5  
+
+set.seed(33)
+random_dna <- sample(DNAString(paste(DNA_BASES, collapse="")),
+                     sum(width(probes)), replace=TRUE)
+random_probes <- successiveViews(random_dna, width(probes))
+random_probes
+random_probes <- as(random_probes, "XStringSet")
+random_probes
+
+random_first5 <- narrow(random_probes, end=5)
+random_last5 <- narrow(random_probes, start=-5)
+
+nb3 <- sum(random_first5 == reverseComplement(random_last5))
+100 * nb3 / length(random_probes)  
+
+
+
+ CCODDE 
+
+Functions to read/write an XStringSet object from/to a file.
+
+
+
+ CCODDS 
+
+filepath <- system.file("extdata", "someORF.fa", package="Biostrings")
+fasta.info(filepath, seqtype="DNA")
+x <- readDNAStringSet(filepath)
+x
+out1 <- tempfile()
+writeXStringSet(x, out1)
+
+filepath <- system.file("extdata", "s_1_sequence.txt",
+                        package="Biostrings")
+fastq.geometry(filepath)
+readDNAStringSet(filepath, format="fastq")
+
+library(BSgenome.Celegans.UCSC.ce2)
+sw_start <- seq.int(1, length(Celegans$chrI)-50, by=50)
+sw <- Views(Celegans$chrI, start=sw_start, width=10)
+my_fake_shortreads <- as(sw, "XStringSet")
+my_fake_ids <- sprintf("ID%06d",  seq_len(length(my_fake_shortreads)))
+names(my_fake_shortreads) <- my_fake_ids
+my_fake_shortreads
+
+out2 <- tempfile()
+writeXStringSet(my_fake_shortreads, out2, format="fastq")
+
+my_fake_quals
+out3 <- tempfile()
+writeXStringSet(my_fake_shortreads, out3, format="fastq",
+                qualities=my_fake_quals)
+
+saveXStringSet(my_fake_shortreads, "my_fake_shortreads", dirpath=tempdir())
+
+
+
+ CCODDE 
+
+The XStringSetList class is a virtual container for storing a list
+of XStringSet objects.
+
+
+
+ CCODDS 
+
+
+dna1 <- DNAStringSet(c("AAA", "AC", "", "T", "GGATA"))
+dna2 <- DNAStringSet(c("G", "TT", "C"))
+x <- DNAStringSetList(dna1, dna2)
+x
+
+y <- DNAStringSetList(c("AAA", "AC", "", "T", "GGATA"), c("G", "TT", "C"))
+stopifnot(identical(x, y))
+
+length(x)
+elementLengths(x)
+unlist(x)
+x[[1]]
+x[[2]]
+as.list(x)
+
+names(x) <- LETTERS[1:length(x)]
+x[["A"]]
+x[["B"]]
+as.list(x)  
+
+PartitioningByEnd(x)
+length(PartitioningByEnd(x))
+nobj(PartitioningByEnd(x))
+grouplength(PartitioningByEnd(x))  
+
+start(PartitioningByEnd(x))
+end(PartitioningByEnd(x))
+width(PartitioningByEnd(x))  
+
+
+
+ CCODDE 
+
+The XStringViews class is the basic container for storing a set of views
+(start/end locations) on the same sequence (an XString object).
+
+
+
+ CCODDS 
+
+
+  s <- DNAString("-CTC-N")
+  v4 <- Views(s, start=3:0, end=5:8)
+  v4
+  subject(v4)
+  length(v4)
+  start(v4)
+  end(v4)
+  width(v4)
+
+  names(v4)[3:4] <- "out of limits"
+  names(v4)
+
+  names(v4)[start(v4) < 1 | nchar(subject(v4)) < end(v4)] <- "out of limits"
+  names(v4)[nchar(v4) < width(v4)] <- "out of limits"
+
+  s2a <- v4[[2]]
+  s2b <- subseq(subject(v4), start=start(v4)[2], end=end(v4)[2])
+  identical(s2a, s2b) 
+
+  #v4[[3]] 
+
+  v12 <- Views(DNAString("TAATAATG"), start=-2:9, end=0:11)
+  v12 == DNAString("TAA")
+  v12[v12 == v12[4]]
+  v12[v12 == v12[1]]
+  v12[3] == Views(RNAString("AU"), start=0, end=2)
+
+  Views(BString("aaa--b"), start=-3:4, end=-3:4 + c(3:6, 6:3))
+
+  subject <- "abcdefghij"
+  Views(subject, start=2:1, end=4)
+  Views(subject, start=5:7, end=nchar(subject))
+  Views(subject, start=1, end=5:7)
+
+  v2 <- Views("abCDefgHIJK", start=c(8, 3), end=c(14, 4))
+  gaps(v2)
+
+  as(v12, "XStringSet")  
+  rna <- as(v12, "RNAStringSet")
+  as(rna, "Views")
+
+
+
+ CCODDE 
+
+A variety of different functions used to deal with sequence alignments.
+
+
+
+ CCODDS 
+
+  string1 <- "ACTTCACCAGCTCCCTGGCGGTAAGTTGATC---AAAGG---AAACGCAAAGTTTTCAAG"
+  string2 <- "GTTTCACTACTTCCTTTCGGGTAAGTAAATATATAAATATATAAAAATATAATTTTCATC"
+  compareStrings(string1, string2)
+
+  nw1 <-
+    pairwiseAlignment(AAStringSet(c("HLDNLKGTF", "HVDDMPNAL")), AAString("SMDDTEKMSMKL"),
+      substitutionMatrix = "BLOSUM50", gapOpening = -3, gapExtension = -1)
+  consensusMatrix(nw1)
+
+  data(phiX174Phage)
+  phageConsmat <- consensusMatrix(phiX174Phage, baseOnly = TRUE)
+  phageDiffs <- which(apply(phageConsmat, 2, max) < length(phiX174Phage))
+  phageDiffs
+  phageConsmat[,phageDiffs]
+
+
+
+ CCODDE 
+
+Translate letters of a sequence.
+
+
+
+ CCODDS 
+
+  x <- BString("MiXeD cAsE 123")
+  chartr("iXs", "why", x)
+
+
+  library(BSgenome.Celegans.UCSC.ce2)
+  chrII <- Celegans[["chrII"]]
+  alphabetFrequency(chrII)
+  pattern <- DNAString("TGGGTGTATTTA")
+
+  plus_strand <- chartr("C", "T", chrII)
+  alphabetFrequency(plus_strand)
+  matchPattern(pattern, plus_strand)
+  matchPattern(pattern, chrII)
+
+  minus_strand <- chartr("G", "A", chrII)
+  alphabetFrequency(minus_strand)
+  matchPattern(reverseComplement(pattern), minus_strand)
+  matchPattern(reverseComplement(pattern), chrII)
+
+
+
+ CCODDE 
+
+This is a variant of , offering a more detailed
+display of object content.
+
+
+
+ CCODDS 
+
+origMAlign <-
+  readDNAMultipleAlignment(filepath =
+                           system.file("extdata",
+                                       "msx2_mRNA.aln",
+                                       package="Biostrings"),
+                           format="clustal")
+detail(origMAlign)
+
+
+
+ CCODDE 
+
+Performs Person's chi-squared test, G-test, or William's corrected G-test to
+determine dependence between two nucleotide positions.
+
+
+
+ CCODDS 
+
+  data(HNF4alpha)
+  dinucleotideFrequencyTest(HNF4alpha, 1, 2)
+  dinucleotideFrequencyTest(HNF4alpha, 1, 2, test = "G")
+  dinucleotideFrequencyTest(HNF4alpha, 1, 2, test = "adjG")
+
+
+
+ CCODDE 
+
+The  and 
+functions can be used to find palindromic or complemented palindromic
+regions in a sequence.
+
+, ,
+,
+, 
+and  are utility functions for
+operating on palindromic or complemented palindromic sequences.
+
+
+
+ CCODDS 
+
+  findComplementedPalindromes(DNAString("ACGTTNAACGT-ACGTTNAACGT"))
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chrX <- Dmelanogaster$chrX
+  chrX_pals <- findComplementedPalindromes(chrX, min.armlength=50, max.looplength=20)
+  complementedPalindromeArmLength(chrX_pals)  
+
+  palindromeArmLength(BString("was it a car or a cat I saw"))
+
+  palindromeLeftArm(BString("Delia saw I was aileD"))
+  complementedPalindromeLeftArm(DNAString("N-ACGTT-AACGT-N"))
+  palindromeLeftArm(DNAString("N-AAA-N-N-TTT-N"))
+
+
+
+ CCODDE 
+
+A generic function for extracting a set of sequences (or subsequences)
+from a sequence container like a BSgenome object or
+other.
+
+
+
+ CCODDS 
+
+library(BSgenome)
+showMethods("getSeq")
+
+
+
+ CCODDE 
+
+This is a replacement for the standard gregexpr function that
+does exact matching only.
+Standard gregexpr() misses matches when they are overlapping.
+The gregexpr2 function finds all matches but it only works in fixed
+mode i.e. for exact matching (regular expressions are not
+supported).
+
+
+
+ CCODDS 
+
+    gregexpr("aa", c("XaaaYaa", "a"), fixed=TRUE)
+    gregexpr2("aa", c("XaaaYaa", "a"))
+
+
+
+ CCODDE 
+
+ allows the user to fill the masked regions
+of a sequence with an arbitrary letter (typically the 
+letter).
+
+
+
+ CCODDS 
+
+  v2 <- Views("abCDefgHIJK", start=c(8, 3), end=c(14, 4))
+  injectHardMask(v2)
+  injectHardMask(v2, letter="=")
+
+  mask0 <- Mask(mask.width=29, start=c(3, 10, 25), width=c(6, 8, 5))
+  x <- DNAString("ACACAACTAGATAGNACTNNGAGAGACGC")
+  masks(x) <- mask0
+  x
+  subject <- injectHardMask(x)
+
+  matchPattern("ACggggggA", subject, max.mismatch=6)
+  matchPattern("ACggggggA", x, max.mismatch=6)
+
+
+
+ CCODDE 
+
+Extract a substring from a string by picking up individual
+letters by their position.
+
+
+
+ CCODDS 
+
+  x <- c("abcd", "ABC")
+  i <- c(3, 1, 1, 2, 1)
+
+  letter(x[1], 3:1)
+  letter(x, 3)
+  letter(x, i)
+  #letter(x, 4)             
+
+  letter(BString(x[1]), i)  
+  BString(x[1])[i]          
+
+  x2 <- as(BStringSet(x), "Views")
+  letter(x2, i)
+
+
+
+ CCODDE 
+
+Given a biological sequence (or a set of biological sequences),
+the  function computes the frequency of
+each letter of the relevant alphabet.
+
+ is similar, but more compact if one is only
+interested in certain letters.
+It can also tabulate letters in common.
+
+ is a more specialized version
+of  for (non-masked) XString objects.
+It tallys the requested letter frequencies for a fixed-width view,
+or window, that is conceptually slid along the entire input sequence.
+
+The  function computes the consensus matrix
+of a set of sequences, and the  function creates
+the consensus sequence from the consensus matrix based upon specified
+criteria.
+
+In this man page we call DNA input (or RNA input) an
+XString, XStringSet, XStringViews or
+MaskedXString object of base type DNA (or RNA).
+
+
+
+ CCODDS 
+
+  data(yeastSEQCHR1)
+  yeast1 <- DNAString(yeastSEQCHR1)
+
+  alphabetFrequency(yeast1)
+  alphabetFrequency(yeast1, baseOnly=TRUE)
+
+  hasOnlyBaseLetters(yeast1)
+  uniqueLetters(yeast1)
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  alphabetFrequency(probes[1:50], baseOnly=TRUE)
+  alphabetFrequency(probes, baseOnly=TRUE, collapse=TRUE)
+
+  letterFrequency(probes[[1]], letters="ACGT", OR=0)
+  base_letters <- alphabet(probes, baseOnly=TRUE)
+  base_letters
+  letterFrequency(probes[[1]], letters=base_letters, OR=0)
+  base_letter_freqs <- letterFrequency(probes, letters=base_letters, OR=0)
+  head(base_letter_freqs)
+  GC_content <- letterFrequency(probes, letters="CG")
+  head(GC_content)
+  letterFrequency(probes, letters="CG", collapse=TRUE)
+
+  data(yeastSEQCHR1)
+  x <- DNAString(yeastSEQCHR1)
+  view.width <- 48
+  letters <- c("A", "CG")
+  two_columns <- letterFrequencyInSlidingView(x, view.width, letters)
+  head(two_columns)
+  tail(two_columns)
+  three_columns <- letterFrequencyInSlidingView(x, view.width, letters, OR=0)
+  head(three_columns)
+  tail(three_columns)
+  stopifnot(identical(two_columns[ , "C|G"],
+                      three_columns[ , "C"] + three_columns[ , "G"]))
+
+  v <- Views(x, start=seq_len(length(x) - view.width + 1), width=view.width)
+  v
+  three_columns2 <- alphabetFrequency(v, baseOnly=TRUE)[ , c("A", "C", "G")]
+  stopifnot(identical(three_columns2, three_columns))
+
+  letterFrequencyInSlidingView(x, letters="ACGTN", view.width=length(x), OR=0)
+
+  file <- system.file("extdata", "someORF.fa", package="Biostrings")
+  orf <- readDNAStringSet(file)
+
+  orf10 <- DNAStringSet(orf, end=10)
+  consensusMatrix(orf10, baseOnly=TRUE)
+
+  consensusMatrix(orf10, baseOnly=TRUE, shift=0:6)
+  consensusMatrix(orf10, baseOnly=TRUE, shift=0:6, width=10)
+
+  as.matrix(orf10, use.names=FALSE)
+
+  consensusMatrix(probes, baseOnly=TRUE)
+
+  consensusString(sort(probes)[1:5])
+  consensusString(sort(probes)[1:5], ambiguityMap = "N", threshold = 0.5)
+
+  consensusString(DNAStringSet(c("NNNN","ACTG")))
+  consensusString(DNAStringSet(c("AANN","ACTG")))
+  consensusString(DNAStringSet(c("ACAG","ACAR"))) 
+  consensusString(DNAStringSet(c("ACAG","ACAR", "ACAG"))) 
+
+  cm <- consensusMatrix(orf10, shift=0:6, width=10)
+  colSums(cm)
+
+  as.integer(coverage(IRanges(rep(1, length(orf)), width(orf)), shift=0:6, width=10))
+
+
+
+ CCODDE 
+
+This function accepts a character vector and computes the length of the
+longest substring containing only  for each element of .
+
+
+
+ CCODDS 
+
+ v = c("AAACTGTGFG", "GGGAATT", "CCAAAAAAAAAATT")
+ longestConsecutive(v, "A")
+
+
+
+ CCODDE 
+
+In this man page we define precisely and illustrate what a match of a
+pattern P in a subject S is in the context of the Biostrings package.
+This definition of a match is central to most pattern matching functions
+available in this package: unless specified otherwise, most of them will
+adhere to the definition provided here.
+
+ checks whether a sequence or set of sequences has the
+specified letters at the specified positions.
+
+,  and  are
+low-level matching functions that only look for matches at the specified
+positions in the subject.
+
+
+
+ CCODDS 
+
+  x <- DNAStringSet(c("AAACGT", "AACGT", "ACGT", "TAGGA"))
+  hasLetterAt(x, "AAAAAA", 1:6)
+
+  q1 <- hasLetterAt(x, "AG", c(2, 4))
+  which(rowSums(q1) == 2)
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  q2 <- hasLetterAt(probes, "TGTA", c(2, 4, 13, 20))
+  sum(rowSums(q2) == 4)
+  q3 <- hasLetterAt(probes, "AACGT", c(13, 25, 25, 25, 25))
+  sum(q3[ , 1] & q3[ , 2]) / sum(q3[ , 1])
+  sum(q3[ , 1] & q3[ , 3]) / sum(q3[ , 1])  
+  sum(q3[ , 1] & q3[ , 4]) / sum(q3[ , 1])  
+  sum(q3[ , 1] & q3[ , 5]) / sum(q3[ , 1])  
+
+
+  subject <- DNAString("GTATA")
+
+  neditAt("AT", subject, at=3)
+  isMatchingAt("AT", subject, at=3)
+
+  neditAt("AT", subject)
+  isMatchingAt("AT", subject)
+
+  isMatchingAt("AT", subject, max.mismatch=1)
+
+  isMatchingAt("AT", subject, at=0:5, max.mismatch=1)
+
+  neditAt("NT", subject, at=1:4)
+  isMatchingAt("NT", subject, at=1:4)
+
+  neditAt("NT", subject, at=1:4, fixed=FALSE)
+  isMatchingAt("NT", subject, at=1:4, fixed=FALSE)
+
+  neditAt("NCA", subject, at=0:5, fixed=FALSE)
+  isMatchingAt("NCA", subject, at=0:5, max.mismatch=1, fixed=FALSE)
+
+  some_starts <- c(10:-10, NA, 6)
+  subject <- DNAString("ACGTGCA")
+  is_matching <- isMatchingAt("CAT", subject, at=some_starts, max.mismatch=1)
+  some_starts[is_matching]
+
+  which.isMatchingAt("CAT", subject, at=some_starts, max.mismatch=1)
+  which.isMatchingAt("CAT", subject, at=some_starts, max.mismatch=1,
+                     follow.index=TRUE)
+
+  subject <- BString("ABCDEFxxxCDEFxxxABBCDE")
+
+  neditAt("ABCDEF", subject, at=9)
+  neditAt("ABCDEF", subject, at=9, with.indels=TRUE)
+  isMatchingAt("ABCDEF", subject, at=9, max.mismatch=1, with.indels=TRUE)
+  isMatchingAt("ABCDEF", subject, at=9, max.mismatch=2, with.indels=TRUE)
+  neditAt("ABCDEF", subject, at=17)
+  neditAt("ABCDEF", subject, at=17, with.indels=TRUE)
+  neditEndingAt("ABCDEF", subject, ending.at=22)
+  neditEndingAt("ABCDEF", subject, ending.at=22, with.indels=TRUE)
+
+
+
+ CCODDE 
+
+Functions for masking a sequence by content (or by position).
+
+
+
+ CCODDS 
+
+
+  maskMotif(BString("AbcbbcbEEE"), "bcb")
+  maskMotif(BString("AbcbcbEEE"), "bcb")
+
+  x0 <- BString("AbcbEEEEEbcbbEEEcbbcbc")
+  x1 <- maskMotif(x0, "E")
+  x1
+  x2 <- maskMotif(x1, "bcb")
+  x2
+  x3 <- maskMotif(x2, "b")
+  x3
+
+
+  x <- DNAString("ACACAACTAGATAGNACTNNGAGAGACGC")
+
+  x1 <- maskMotif(x, "N")
+  x1
+  as(x1, "Views")
+  gaps(x1)
+  as(gaps(x1), "Views")
+
+  x2 <- maskMotif(x1, "AC")
+  x2
+  gaps(x2)
+
+  x3 <- maskMotif(x2, "GA", min.block.width=5)
+  x3  
+  gaps(x3)
+
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chrU <- Dmelanogaster$chrU
+  chrU
+  alphabetFrequency(chrU)
+  chrU <- maskMotif(chrU, "N")
+  chrU
+  alphabetFrequency(chrU)
+  as(chrU, "Views")
+  as(gaps(chrU), "Views")
+
+  mask2 <- Mask(mask.width=length(chrU),
+                start=c(50000, 350000, 543900), width=25000)
+  names(mask2) <- "some ugly regions"
+  masks(chrU) <- append(masks(chrU), mask2)
+  chrU
+  as(chrU, "Views")
+  as(gaps(chrU), "Views")
+
+
+  mask("AxyxyxBC", 2, 6)
+
+  mask("AxyxyxBC", "xyx")
+  noN_chrU <- mask(chrU, "N")
+  noN_chrU
+  alphabetFrequency(noN_chrU, collapse=TRUE)
+
+
+
+ CCODDE 
+
+Miscellaneous utility functions operating on the matches returned by a
+high-level matching function like ,
+, etc...
+
+
+
+ CCODDS 
+
+  subject <- DNAString("ACGTGCA")
+  m <- matchPattern("NCA", subject, max.mismatch=1, fixed=FALSE)
+  mismatch("NCA", m)
+  nmismatch("NCA", m)
+
+  coverage(m)
+
+
+
+
+ CCODDE 
+
+The  function finds paired matches in a sequence
+i.e. matches specified by a left pattern, a right pattern and a maximum
+distance between the left pattern and the right pattern.
+
+
+
+ CCODDS 
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  subject <- Dmelanogaster$chr3R
+  Lpattern <- "AGCTCCGAG"
+  Rpattern <- "TTGTTCACA"
+  matchLRPatterns(Lpattern, Rpattern, 500, subject) 
+
+  subject <- DNAString("AAATTAACCCTT")
+  matchLRPatterns("AA", "TT", 0, subject) 
+  matchLRPatterns("AA", "TT", 1, subject) 
+  matchLRPatterns("AA", "TT", 3, subject) 
+  matchLRPatterns("AA", "TT", 7, subject) 
+
+
+
+ CCODDE 
+
+A set of functions for finding all the occurrences (aka matches
+or hits) of a set of patterns (aka the dictionary) in a reference
+sequence or set of reference sequences (aka the subject)
+
+The following functions differ in what they return: 
+returns the where information i.e. the positions in the subject of all the
+occurrences of every pattern;  returns the how many
+times information i.e. the number of occurrences for each pattern;
+and  returns the who information i.e. which patterns
+in the input dictionary have at least one match.
+
+ and  are vectorized versions
+of  and , respectively, that is,
+they work on a set of reference sequences in a vectorized fashion.
+
+This man page shows how to use these functions (aka the 
+functions) for exact matching of a constant width dictionary i.e.
+a dictionary where all the patterns have the same length (same number
+of nucleotides).
+
+See  for how to use these functions
+for inexact matching or when the original dictionary has a variable width.
+
+
+
+ CCODDS 
+
+
+library(drosophila2probe)
+dict0 <- DNAStringSet(drosophila2probe)
+dict0                                
+length(dict0)                        
+pdict0 <- PDict(dict0)               
+                                     
+
+library(BSgenome.Dmelanogaster.UCSC.dm3)
+chr3R <- Dmelanogaster$chr3R         
+chr3R
+mi0 <- matchPDict(pdict0, chr3R)     
+
+start_index <- startIndex(mi0)       
+length(start_index)                  
+start_index[[8220]]                  
+end_index <- endIndex(mi0)           
+end_index[[8220]]                    
+count_index <- countIndex(mi0)       
+count_index[[8220]]
+mi0[[8220]]                          
+start(mi0[[8220]])                   
+sum(count_index)                     
+table(count_index)
+i0 <- which(count_index == max(count_index))
+pdict0[[i0]]                         
+mi0[[i0]]                            
+Views(chr3R, mi0[[i0]])              
+
+cov3R <- as.integer(coverage(mi0, width=length(chr3R)))
+max(cov3R)
+mean(cov3R)
+sum(cov3R != 0) / length(cov3R)      
+if (interactive()) {
+  plotCoverage <- function(cx, start, end)
+  {
+    plot.new()
+    plot.window(c(start, end), c(0, 20))
+    axis(1)
+    axis(2)
+    axis(4)
+    lines(start:end, cx[start:end], type="l")
+  }
+  plotCoverage(cov3R, 27600000, 27900000)
+}
+
+
+names(dict0) <- mkAllStrings(letters, 4)[seq_len(length(dict0))]
+dict0
+dict0[["abcd"]]
+pdict0n <- PDict(dict0)
+names(pdict0n)[1:30]
+pdict0n[["abcd"]]
+mi0n <- matchPDict(pdict0n, chr3R)
+names(mi0n)[1:30]
+mi0n[["abcd"]]
+
+unlist(mi0)[1:10]
+unlist(mi0n)[1:10]  
+
+
+
+count_index0 <- countPDict(pdict0, chr3R)
+stopifnot(identical(count_index0, count_index))
+
+if (interactive()) {
+  getPDictStats <- function(dict, subject)
+  {
+    ans_width <- width(dict[1])
+    ans_pptime <- system.time(pdict <- PDict(dict))[["elapsed"]]
+    pptb <- pdict@threeparts@pptb
+    ans_nnodes <- nnodes(pptb)
+    ans_nupatt <- sum(!duplicated(pdict))
+    ans_matchtime <- system.time(
+                       mi0 <- matchPDict(pdict, subject)
+                     )[["elapsed"]]
+    ans_totalcount <- sum(countIndex(mi0))
+    list(
+      width=ans_width,
+      pptime=ans_pptime,
+      nnodes=ans_nnodes,
+      nupatt=ans_nupatt,
+      matchtime=ans_matchtime,
+      totalcount=ans_totalcount
+    )
+  }
+  stats <- lapply(8:25,
+               function(width)
+                   getPDictStats(DNAStringSet(dict0, end=width), chr3R))
+  stats <- data.frame(do.call(rbind, stats))
+  stats
+}
+
+
+dict3 <- DNAStringSet(mkAllStrings(DNA_BASES, 3))  
+dict3
+pdict3 <- PDict(dict3)
+
+res3a <- countPDict(pdict3, chr3R)
+res3b <- countPDict(dict3, chr3R)
+res3c <- sapply(dict3,
+             function(pattern) countPattern(pattern, chr3R))
+stopifnot(identical(res3a, res3b))
+stopifnot(identical(res3a, res3c))
+
+
+dictD <- xscat(dict3, "N", reverseComplement(dict3))
+
+resDa <- matchPDict(dictD, chr3R, fixed=FALSE)
+resDb <- sapply(dictD,
+                function(pattern)
+                  matchPattern(pattern, chr3R, fixed=FALSE))
+stopifnot(all(sapply(seq_len(length(dictD)),
+                     function(i)
+                       identical(resDa[[i]], as(resDb[[i]], "IRanges")))))
+
+subject <- Dmelanogaster$upstream1000[1:100]
+subject
+mat1 <- vcountPDict(pdict0, subject)
+dim(mat1)  
+nhit_per_probe <- rowSums(mat1)
+table(nhit_per_probe)
+
+mat2 <- sapply(unname(subject), function(x) countPDict(pdict0, x))
+stopifnot(identical(mat1, mat2))
+
+if (interactive()) {
+  subject <- Dmelanogaster$upstream1000
+  vcountPDict(pdict0, subject)
+  length(pdict0) * length(Dmelanogaster$upstream1000)
+  1 * length(pdict0) * length(Dmelanogaster$upstream1000)  
+  nhit_per_seq <- vcountPDict(pdict0, subject, collapse=2)
+  sum(nhit_per_seq >= 1)  
+  table(nhit_per_seq)
+  which(nhit_per_seq == 37)  
+  sum(countPDict(pdict0, subject[[603]]))  
+}
+
+pdict3 <- PDict(dict3)
+subject <- Dmelanogaster$upstream1000
+subject
+
+mat3a <- vcountPDict(pdict3, subject)
+mat3b <- vcountPDict(dict3, subject)
+mat3c <- sapply(dict3,
+                function(pattern) vcountPattern(pattern, subject))
+mat3d <- sapply(unname(subject),
+                function(x) countPDict(pdict3, x))
+stopifnot(identical(mat3a, mat3b))
+stopifnot(identical(mat3a, t(mat3c)))
+stopifnot(identical(mat3a, mat3d))
+
+nhitpp3a <- vcountPDict(pdict3, subject, collapse=1)  
+nhitpp3b <- vcountPDict(dict3, subject, collapse=1)
+nhitpp3c <- sapply(dict3,
+                   function(pattern) sum(vcountPattern(pattern, subject)))
+stopifnot(identical(nhitpp3a, nhitpp3b))
+stopifnot(identical(nhitpp3a, nhitpp3c))
+
+nhitps3a <- vcountPDict(pdict3, subject, collapse=2)  
+nhitps3b <- vcountPDict(dict3, subject, collapse=2)
+nhitps3c <- sapply(unname(subject),
+                   function(x) sum(countPDict(pdict3, x)))
+stopifnot(identical(nhitps3a, nhitps3b))
+stopifnot(identical(nhitps3a, nhitps3c))
+
+vwp3a <- vwhichPDict(pdict3, subject)
+vwp3b <- vwhichPDict(dict3, subject)
+vwp3c <- lapply(seq_len(ncol(mat3a)), function(j) which(mat3a[ , j] != 0L))
+vwp3d <- lapply(unname(subject), function(x) whichPDict(pdict3, x))
+stopifnot(identical(vwp3a, vwp3b))
+stopifnot(identical(vwp3a, vwp3c))
+stopifnot(identical(vwp3a, vwp3d))
+
+table(sapply(vwp3a, length))
+which.min(sapply(vwp3a, length))
+dict3[-vwp3a[[9181]]]  
+
+if (interactive()) {
+
+  library(hgu95av2probe)
+  library(hgu133aprobe)
+  probes1 <- DNAStringSet(hgu95av2probe)
+  probes2 <- DNAStringSet(hgu133aprobe)
+  pdict2 <- PDict(probes2)
+
+  map1to2 <- vwhichPDict(pdict2, probes1)  
+
+  mapProbeSetIDs1to2 <- function(psID)
+    unique(hgu133aprobe$Probe.Set.Name[unlist(
+      map1to2[hgu95av2probe$Probe.Set.Name == psID]
+    )])
+
+  psIDs1 <- unique(hgu95av2probe$Probe.Set.Name)
+  mapPSIDs1to2 <- lapply(psIDs1, mapProbeSetIDs1to2)  
+  names(mapPSIDs1to2) <- psIDs1
+
+  table(sapply(mapPSIDs1to2, length))
+
+
+  probes12 <- DNAStringSet(c(hgu95av2probe$sequence, hgu133aprobe$sequence))
+  pdict12 <- PDict(probes12)
+  dups0 <- pdict12@dups0
+
+  mapProbeSetIDs1to2alt <- function(psID)
+  {
+    ii1 <- unique(togroup(dups0, which(hgu95av2probe$Probe.Set.Name == psID)))
+    ii2 <- members(dups0, ii1) - length(probes1)
+    ii2 <- ii2[ii2 >= 1L]
+    unique(hgu133aprobe$Probe.Set.Name[ii2])
+  }
+
+  mapPSIDs1to2alt <- lapply(psIDs1, mapProbeSetIDs1to2alt)  
+  names(mapPSIDs1to2alt) <- psIDs1
+
+  stopifnot(identical(lapply(mapPSIDs1to2alt, sort),
+                      lapply(mapPSIDs1to2, sort)))
+}
+
+
+
+ CCODDE 
+
+The ,  and  functions
+efficiently find the occurrences in a text (the subject) of all patterns
+stored in a preprocessed dictionary.
+
+This man page shows how to use these functions for inexact (or fuzzy)
+matching or when the original dictionary has a variable width.
+
+See  for how to use these functions for exact
+matching of a constant width dictionary i.e. a dictionary where all the
+patterns have the same length (same number of nucleotides).
+
+
+
+ CCODDS 
+
+
+  library(drosophila2probe)
+  dict0 <- DNAStringSet(drosophila2probe)
+  dict0  
+
+  pdict9 <- PDict(dict0, tb.end=9)
+  pdict9
+  tail(pdict9)
+  sum(duplicated(pdict9))
+  table(patternFrequency(pdict9))
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chr3R <- Dmelanogaster$chr3R
+  chr3R
+  table(countPDict(pdict9, chr3R, max.mismatch=1))
+  table(countPDict(pdict9, chr3R, max.mismatch=3))
+  table(countPDict(pdict9, chr3R, max.mismatch=5))
+
+
+  pdict0 <- PDict(dict0)
+  count0 <- countPDict(pdict0, chr3R)
+  count0b <- countPDict(pdict9, chr3R, max.mismatch=0)
+  identical(count0b, count0)  
+  
+
+  dict0 <- DNAStringSet(c("TACCNG", "TAGT", "CGGNT", "AGTAG", "TAGT"))
+
+
+  pdict <- PDict(dict0, tb.end=3)
+  tail(pdict)
+
+  subject <- DNAString("TAGTACCAGTTTCGGG")
+
+  m <- matchPDict(pdict, subject)
+  countIndex(m)  
+  m[[2]]
+
+
+  m <- matchPDict(pdict, subject, fixed=FALSE)
+  countIndex(m)  
+  m[[1]]
+
+  m <- matchPDict(pdict, subject, max.mismatch=1)
+  countIndex(m)  
+  m[[4]]
+
+  m <- matchPDict(pdict, subject, max.mismatch=1, fixed=FALSE)
+  countIndex(m)  
+  m[[3]]  
+  Views(subject, m[[3]])
+
+  m <- matchPDict(pdict, subject, max.mismatch=2)
+  countIndex(m)  
+  m[[4]]
+
+  unlist(m)
+
+  pdict <- PDict(c("ACAC", "TCCG"))
+  as.list(matchPDict(pdict, DNAString("ACNCCGT")))
+  as.list(matchPDict(pdict, DNAString("ACNCCGT"), fixed="pattern"))
+  as.list(matchPDict(pdict, DNAString("ACWCCGT"), fixed="pattern"))
+  as.list(matchPDict(pdict, DNAString("ACRCCGT"), fixed="pattern"))
+  as.list(matchPDict(pdict, DNAString("ACKCCGT"), fixed="pattern"))
+
+  dict <- DNAStringSet(c("TTC", "CTT"))
+  pdict <- PDict(dict)
+  subject <- DNAString("CYTCACTTC")
+  mi1 <- matchPDict(pdict, subject, fixed="pattern")
+  mi2 <- matchPDict(dict, subject, fixed="pattern")
+  stopifnot(identical(as.list(mi1), as.list(mi2)))
+
+
+
+ CCODDE 
+
+Position Weight Matrix (PWM) creating, matching, and related utilities
+for DNA data. (PWM for amino acid sequences are not supported.)
+
+
+
+ CCODDS 
+
+  data(HNF4alpha)
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chr3R <- Dmelanogaster$chr3R
+  chr3R
+
+  pfm <- consensusMatrix(HNF4alpha)
+  pwm <- PWM(pfm)  
+
+  round(pwm, 2)
+  maxWeights(pwm)
+  maxScore(pwm)
+  reverseComplement(pwm)
+
+  PWMscoreStartingAt(pwm, unmasked(chr3R), starting.at=1:5)
+
+  hits <- matchPWM(pwm, chr3R)
+  nhit <- countPWM(pwm, chr3R)  
+
+  scores <- PWMscoreStartingAt(pwm, subject(hits), start(hits))
+
+  matchPWM(reverseComplement(pwm), chr3R)
+
+
+
+ CCODDE 
+
+A set of functions for finding all the occurrences (aka matches or hits)
+of a given pattern (typically short) in a (typically long) reference sequence
+or set of reference sequences (aka the subject)
+
+
+
+ CCODDS 
+
+
+  x <- DNAString("AAGCGCGATATG")
+  m1 <- matchPattern("GCNNNAT", x)
+  m1
+  m2 <- matchPattern("GCNNNAT", x, fixed=FALSE)
+  m2
+  as.matrix(m2)
+
+  data(yeastSEQCHR1)
+  yeast1 <- DNAString(yeastSEQCHR1)
+  PpiI <- "GAACNNNNNCTC" 
+  match1.PpiI <- matchPattern(PpiI, yeast1, fixed=FALSE)
+  match2.PpiI <- matchPattern(PpiI, yeast1, max.mismatch=1, fixed=FALSE)
+
+  library(BSgenome.Celegans.UCSC.ce2)
+  chrII <- Celegans[["chrII"]]
+  alphabetFrequency(chrII)
+  matchPattern("N", chrII)
+  matchPattern("TGGGTGTCTTT", chrII) 
+  matchPattern("TGGGTGTCTTT", chrII, fixed=FALSE) 
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chrX <- maskMotif(Dmelanogaster$chrX, "N")
+  as(chrX, "Views") 
+  matchPattern("TTTATGNTTGGTA", chrX, fixed=FALSE)
+  masks(chrX) <- NULL
+  matchPattern("TTTATGNTTGGTA", chrX, fixed="subject")
+
+
+  Ebox <- DNAString("CANNTG")
+  subject <- Celegans$upstream5000
+  mindex <- vmatchPattern(Ebox, subject, fixed=FALSE)
+  count_index <- countIndex(mindex)  
+                                     
+  sum(count_index)  
+  table(count_index)
+  i0 <- which(count_index == max(count_index))
+  subject[i0]  
+
+  mindex[[i0]]
+  Views(subject[[i0]], mindex[[i0]])
+
+  library(BSgenome.Celegans.UCSC.ce2)
+  pattern <- DNAString("ACGGACCTAATGTTATC")
+  subject <- Celegans$chrI
+
+  matchPattern(pattern, subject, max.mismatch=2)
+
+  system.time(m <- matchPattern(pattern, subject, max.mismatch=2, with.indels=TRUE))
+  m
+
+  if (interactive()) {
+    mat <- nucleotideSubstitutionMatrix(match=1, mismatch=0, baseOnly=TRUE)
+    system.time(pwa <- pairwiseAlignment(pattern, subject, type="local",
+                                         substitutionMatrix=mat,
+                                         gapOpening=0, gapExtension=1))
+    pwa
+  }
+
+  subject <- BString("ACDEFxxxCDEFxxxABCE")
+  matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+  matchPattern("ABCDEF", subject, max.mismatch=2)
+  subject <- BString("AiBCDiEFxxxABCDiiFxxxAiBCDEFxxxABCiDEF")
+  matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+  matchPattern("ABCDEF", subject, max.mismatch=2)
+  subject <- BString("AsCDEFxxxABDCEFxxxBACDEFxxxABCEDF")
+  matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+  matchPattern("ABCDEF", subject, max.mismatch=2)
+
+
+
+ CCODDE 
+
+In the context of a computer-simulated PCR experiment, one wants to find
+the amplicons mapped to a given primer pair.
+The  function can be used for this: given a forward and a
+reverse probe (i.e. the chromosome-specific sequences of the forward and
+reverse primers used for the experiment) and a target sequence (generally a
+chromosome sequence), the  function will return all
+the theoretical amplicons mapped to this probe pair.
+
+
+
+ CCODDS 
+
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  subject <- Dmelanogaster$chr3R
+
+  Fprobe <- "AGCTCCGAGTTCCTGCAATA"
+  Rprobe <- "CGTTGTTCACAAATATGCGG"
+  matchProbePair(Fprobe, Rprobe, subject) 
+
+  Fprobe <- "AGCTCCGAGTTCC"
+  Rprobe <- "CGTTGTTCACAA"
+  matchProbePair(Fprobe, Rprobe, subject) 
+  Fprobe <- "AGCTCCGAGTT"
+  Rprobe <- "CGTTGTTCACA"
+  matchProbePair(Fprobe, Rprobe, subject) 
+
+
+
+ CCODDE 
+
+The  sequence, a character string (probably representing
+a transcript of interest), is scanned for the presence of exact
+matches to the sequences in the character vector .
+The indices of the set of matches are returned.
+
+The function is inefficient: it works on R's character vectors, and
+the actual matching algorithm is of time complexity 
+times !
+
+See ,  and
+ for more efficient sequence matching functions.
+
+
+
+ CCODDS 
+
+  if(require("hgu95av2probe")){
+    data("hgu95av2probe")
+    seq <- hgu95av2probe$sequence[1:20]
+    target <- paste(seq, collapse="")
+    matchprobes(target, seq, probepos=TRUE)
+  }
+
+
+
+ CCODDE 
+
+Some miscellaneous stuff.
+
+
+
+ CCODDS 
+
+  
+  my.contig <- DNAStringSet(
+                 sapply(
+                   sample(c(100:10000), 10),
+                   function(size)
+                       paste(sample(DNA_BASES, size, replace=TRUE), collapse="")
+                 )
+               )
+
+  
+  my.size <- width(my.contig)
+
+  
+  my.contig.N50 <- N50(my.size)
+
+
+
+ CCODDE 
+Simple gap implementation of Needleman-Wunsch global alignment algorithm.
+
+
+ CCODDS 
+
+
+
+
+ CCODDE 
+
+Given a DNA or RNA sequence (or a set of DNA or RNA sequences),
+the  function computes the frequency
+of all possible oligonucleotides of a given length (called the width
+in this particular context).
+
+The  and 
+functions are convenient wrappers for calling 
+with  and , respectively.
+
+The  function computes the frequency
+of the short sequences formed by extracting the nucleotides found
+at some fixed positions from each sequence of a set of DNA or RNA
+sequences.
+
+In this man page we call DNA input (or RNA input) an
+XString, XStringSet, XStringViews or
+MaskedXString object of base type DNA (or RNA).
+
+
+
+ CCODDS 
+
+  data(yeastSEQCHR1)
+  yeast1 <- DNAString(yeastSEQCHR1)
+
+  dinucleotideFrequency(yeast1)
+  trinucleotideFrequency(yeast1)
+  oligonucleotideFrequency(yeast1, 4)
+
+  f6 <- oligonucleotideFrequency(yeast1, 6)
+  f6[f6 == min(f6)]
+  f6[f6 == max(f6)]
+
+  tri <- trinucleotideFrequency(yeast1, as.array=TRUE)
+  tri["A", "A", "C"] 
+  tri["T", , ] 
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  dfmat <- dinucleotideFrequency(probes)  
+  dinucleotideFrequency(probes, simplify.as="collapsed")
+  dinucleotideFrequency(probes, simplify.as="collapsed", as.matrix=TRUE)
+
+  
+  expectedDinucleotideFrequency <- function(x)
+  {
+      
+      bf <- alphabetFrequency(x, baseOnly=TRUE)[DNA_BASES]
+      (as.matrix(bf) %*% t(bf) - diag(bf)) / length(x)
+  }
+
+  library(BSgenome.Celegans.UCSC.ce2)
+  chrI <- Celegans$chrI
+  obs_df <- dinucleotideFrequency(chrI, as.matrix=TRUE)
+  obs_df  
+  exp_df <- expectedDinucleotideFrequency(chrI)
+  stopifnot(as.integer(sum(exp_df)) == sum(obs_df))
+
+  obs_df / exp_df  
+
+  nucleotideFrequencyAt(probes, 13)
+  nucleotideFrequencyAt(probes, c(13, 20))
+  nucleotideFrequencyAt(probes, c(13, 20), as.array=FALSE)
+
+  nucleotideFrequencyAt(probes, c(2, 4, 13, 20))["T", "G", "T", "A"]
+  nf <- nucleotideFrequencyAt(probes, c(13, 25))
+  sum(nf["A", "A"]) / sum(nf["A", ])
+  sum(nf["A", "C"]) / sum(nf["A", ])  
+  sum(nf["A", "G"]) / sum(nf["A", ])  
+  sum(nf["A", "T"]) / sum(nf["A", ])  
+
+
+  oligonucleotideTransitions(yeast1)
+  oligonucleotideTransitions(yeast1, 2, as.prob=TRUE)
+
+  triL <- trinucleotideFrequency(yeast1, fast.moving.side="left")
+  all(as.vector(tri) == triL) 
+
+  tri1 <- trinucleotideFrequency(yeast1)
+  names(tri1) <- GENETIC_CODE[names(tri1)]
+  sapply(split(tri1, names(tri1)), sum) 
+
+  f12 <- oligonucleotideFrequency(yeast1, 12, with.labels=FALSE) 
+
+  dict1 <- mkAllStrings(LETTERS[1:3], 4)
+  dict2 <- mkAllStrings(LETTERS[1:3], 4, fast.moving.side="left")
+  stopifnot(identical(reverse(dict1), dict2)) 
+
+
+
+ CCODDE 
+
+Solves (Needleman-Wunsch) global alignment, (Smith-Waterman) local alignment,
+and (ends-free) overlap alignment problems.
+
+
+
+ CCODDS 
+
+  s1 <- 
+    DNAString("ACTTCACCAGCTCCCTGGCGGTAAGTTGATCAAAGGAAACGCAAAGTTTTCAAG")
+  s2 <-
+    DNAString("GTTTCACTACTTCCTTTCGGGTAAGTAAATATATAAATATATAAAAATATAATTTTCATC")
+
+  
+  mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = -3, baseOnly = TRUE)
+  globalAlign <-
+    pairwiseAlignment(s1, s2, substitutionMatrix = mat,
+                      gapOpening = -5, gapExtension = -2)
+  localAlign <-
+    pairwiseAlignment(s1, s2, type = "local", substitutionMatrix = mat,
+                      gapOpening = -5, gapExtension = -2)
+  overlapAlign <-
+    pairwiseAlignment(s1, s2, type = "overlap", substitutionMatrix = mat,
+                      gapOpening = -5, gapExtension = -2)
+
+  
+  pairwiseAlignment(s1, s2,
+                    patternQuality = SolexaQuality(rep(c(22L, 12L), times = c(36, 18))),
+                    subjectQuality = SolexaQuality(rep(c(22L, 12L), times = c(40, 20))),
+                    scoreOnly = TRUE)
+
+  
+  pairwiseAlignment(s1, s2,
+                    patternQuality = SolexaQuality(rep(c(22L, 12L), times = c(36, 18))),
+                    subjectQuality = SolexaQuality(rep(c(22L, 12L), times = c(40, 20))),
+                    type = "local")
+  mapping <- diag(4)
+  dimnames(mapping) <- list(DNA_BASES, DNA_BASES)
+  mapping["C", "T"] <- mapping["T", "C"] <- 1
+  mapping["G", "A"] <- mapping["A", "G"] <- 1
+  pairwiseAlignment(s1, s2,
+                    patternQuality = SolexaQuality(rep(c(22L, 12L), times = c(36, 18))),
+                    subjectQuality = SolexaQuality(rep(c(22L, 12L), times = c(40, 20))),
+                    fuzzyMatrix = mapping,
+                    type = "local")
+
+  pairwiseAlignment(AAString("PAWHEAE"), AAString("HEAGAWGHEE"),
+                    substitutionMatrix = "BLOSUM50",
+                    gapOpening = 0, gapExtension = -8)
+
+
+
+ CCODDE 
+
+Six versions of the complete genome for bacteriophage  X174 as well
+as a small number of Solexa short reads, qualities associated with those short
+reads, and counts for the number times those short reads occurred.
+
+
+
+ CCODDS 
+
+data(phiX174Phage)
+nchar(phiX174Phage)
+genBankPhage <- phiX174Phage[[1]]
+genBankSubstring <- substring(genBankPhage, 2793-34, 2811+34)
+
+data(srPhiX174)
+srPhiX174
+quPhiX174
+summary(wtPhiX174)
+
+alignPhiX174 <-
+  pairwiseAlignment(srPhiX174, genBankSubstring,
+                    patternQuality = SolexaQuality(quPhiX174),
+                    subjectQuality = SolexaQuality(99L),
+                    type = "global-local")
+summary(alignPhiX174, weight = wtPhiX174)
+
+
+
+ CCODDE 
+
+Calculates the percent sequence identity for a pairwise sequence alignment.
+
+
+
+ CCODDS 
+
+  s1 <- DNAString("AGTATAGATGATAGAT")
+  s2 <- DNAString("AGTAGATAGATGGATGATAGATA")
+
+  palign1 <- pairwiseAlignment(s1, s2)
+  palign1
+  pid(palign1)
+
+  palign2 <-
+    pairwiseAlignment(s1, s2,
+      substitutionMatrix =
+      nucleotideSubstitutionMatrix(match = 2, mismatch = 10, baseOnly = TRUE))
+  palign2
+  pid(palign2, type = "PID4")
+
+
+
+ CCODDE 
+
+Functions for searching the Longest Common Prefix/Suffix/Substring
+of two strings.
+
+WARNING: These functions are experimental and might
+not work properly! Full documentation will come later.
+
+Please send questions/comments to hpages@fhcrc.org
+
+Thanks for your comprehension!
+
+
+
+
+
+ first makes a copy of a sequence (or set of
+sequences) and then replaces some of the original letters by new
+letters at the specified locations.
+
+ is the IN PLACE version of
+: it will modify the original
+sequence in place i.e. without copying it first.
+Note that in place modification of a sequence is fundamentally
+dangerous because it alters all objects defined in your session
+that make reference to the modified sequence.
+NEVER use , unless you know what
+you are doing!
+
+
+
+ CCODDS 
+
+  replaceLetterAt(DNAString("AAMAA"), c(5, 1, 3, 1), "TYNC")
+  replaceLetterAt(DNAString("AAMAA"), c(5, 1, 3, 1), "TYNC", if.not.extending="merge")
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  at <- matrix(c(TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE),
+               nrow=length(probes), ncol=width(probes)[1],
+               byrow=TRUE)
+  letter_subject <- DNAString(paste(rep.int("-", width(probes)[1]), collapse=""))
+  letter <- as(Views(letter_subject, start=1, end=rowSums(at)), "XStringSet")
+  replaceLetterAt(probes, at, letter)
+
+
+
+ CCODDE 
+
+Use these functions for reversing sequences and/or complementing DNA
+or RNA sequences.
+
+
+
+ CCODDS 
+
+
+x <- DNAString("ACGT-YN-")
+reverseComplement(x)
+
+library(drosophila2probe)
+probes <- DNAStringSet(drosophila2probe)
+probes
+alphabetFrequency(probes, collapse=TRUE)
+rcprobes <- reverseComplement(probes)
+rcprobes
+alphabetFrequency(rcprobes, collapse=TRUE)
+
+
+pm2mm <- function(probes)
+{
+    probes <- DNAStringSet(probes)
+    subseq(probes, start=13, end=13) <- complement(subseq(probes, start=13, end=13))
+    probes
+}
+mmprobes <- pm2mm(probes)
+mmprobes
+alphabetFrequency(mmprobes, collapse=TRUE)
+
+
+library(BSgenome.Dmelanogaster.UCSC.dm3)
+chrX <- Dmelanogaster$chrX
+pattern <- DNAString("ACCAACNNGGTTG")
+matchPattern(pattern, chrX, fixed=FALSE)  
+rcpattern <- reverseComplement(pattern)
+rcpattern
+m0 <- matchPattern(rcpattern, chrX, fixed=FALSE)
+m0  
+
+chrXminus <- reverseComplement(chrX)  
+chrXminus
+m1 <- matchPattern(pattern, chrXminus, fixed=FALSE)
+m2 <- reverseComplement(m1)  
+m3 <- rev(m2) 
+
+if (interactive()) {
+  library(BSgenome.Hsapiens.UCSC.hg18)
+  chr1 <- Hsapiens$chr1
+  matchPattern(pattern, reverseComplement(chr1))  
+  matchPattern(reverseComplement(pattern), chr1)  
+}
+
+
+
+ CCODDE 
+
+Computes the Levenshtein edit distance or pairwise alignment score matrix for a
+set of strings.
+
+
+
+ CCODDS 
+
+  stringDist(c("lazy", "HaZy", "crAzY"))
+  stringDist(c("lazy", "HaZy", "crAzY"), ignoreCase = TRUE)
+
+  data(phiX174Phage)
+  plot(hclust(stringDist(phiX174Phage), method = "single"))
+
+  data(srPhiX174)
+  stringDist(srPhiX174[1:4])
+  stringDist(srPhiX174[1:4], method = "quality",
+             quality = SolexaQuality(quPhiX174[1:4]),
+             gapOpening = -10, gapExtension = -4)
+
+
+
+ CCODDE 
+
+Predefined substitution matrices for nucleotide and amino acid alignments.
+
+
+
+ CCODDS 
+
+  s1 <- 
+    DNAString("ACTTCACCAGCTCCCTGGCGGTAAGTTGATCAAAGGAAACGCAAAGTTTTCAAG")
+  s2 <-
+    DNAString("GTTTCACTACTTCCTTTCGGGTAAGTAAATATATAAATATATAAAAATATAATTTTCATC")
+
+  pairwiseAlignment(s1, s2,
+                    substitutionMatrix = nucleotideSubstitutionMatrix(0, -1, TRUE),
+                    gapOpening = 0, gapExtension = -1)
+
+  qualityMatrices <- qualitySubstitutionMatrices()
+  qualityMatrices["22", "22", "1"]
+  qualityMatrices["22", "22", "0"]
+
+  pairwiseAlignment(s1, s2)
+
+  subscores <- errorSubstitutionMatrices(errorProbability = 0.1)
+  submat <- matrix(subscores[,,"0"], 4, 4)
+  diag(submat) <- subscores[,,"1"]
+  dimnames(submat) <- list(DNA_ALPHABET[1:4], DNA_ALPHABET[1:4])
+  submat
+  pairwiseAlignment(s1, s2, substitutionMatrix = submat)
+
+  aa1 <- AAString("HXBLVYMGCHFDCXVBEHIKQZ")
+  aa2 <- AAString("QRNYMYCFQCISGNEYKQN")
+  pairwiseAlignment(aa1, aa2, substitutionMatrix = "BLOSUM62", gapOpening = -3, gapExtension = -1)
+
+  pairwiseAlignment(aa1, aa2, substitutionMatrix = "BLOSUM62", gapOpening = -6, gapExtension = -2)
+
+  pairwiseAlignment(aa1, aa2, substitutionMatrix = "BLOSUM50", gapOpening = -3, gapExtension = -1)
+
+  if (interactive()) {
+    data(BLOSUM62)
+    BLOSUM62["Q", "Z"]
+    file <- "ftp://ftp.ncbi.nih.gov/blast/matrices/BLOSUM62"
+    b62 <- as.matrix(read.table(file, check.names=FALSE))
+    b62["Q", "Z"]
+  }
+
+
+
+ CCODDE 
+
+The  utility function turns a DNAString object
+into a complex vector.
+
+
+
+ CCODDS 
+
+  seq <- DNAString("accacctgaccattgtcct")
+  baseValues1 <- c(A=1+0i, G=0+1i, T=-1+0i, C=0-1i)
+  toComplex(seq, baseValues1)
+
+  baseValues2 <- c(A=0, C=1, G=1, T=0)
+  sum(as.integer(toComplex(seq, baseValues2)))
+
+
+
+ CCODDE 
+
+Functions for transcription and/or translation of DNA or RNA
+sequences, and related utilities.
+
+
+
+ CCODDS 
+
+  file <- system.file("extdata", "someORF.fa", package="Biostrings")
+  x <- readDNAStringSet(file)
+  x
+
+  x <- DNAStringSet(x, start=1001, end=-1001)
+
+  y1 <- x[[1]]
+  mask1 <- Mask(length(y1), start=71, end=160)
+  masks(y1) <- mask1
+  y1
+  translate(y1)
+
+  codons(y1)
+  which(width(codons(y1)) != 3)
+  codons(y1)[20:28]
+
+  dna <- DNAStringSet(c("ATC", "GCTG", "CGACT"))
+  translate(reverseComplement(dna))
+
+  dnaSubseq <- lapply(1:3, function(pos, dna) 
+      subseq(c(dna, reverseComplement(dna)), start=pos), dna)
+  lapply(dnaSubseq, translate)
+
+
+
+
+ CCODDE 
+
+The  function trims left and/or right flanking patterns
+from sequences.
+
+
+
+ CCODDS 
+
+  Lpattern <- "TTCTGCTTG"
+  Rpattern <- "GATCGGAAG"
+  subject <- DNAString("TTCTGCTTGACGTGATCGGA")
+  subjectSet <- DNAStringSet(c("TGCTTGACGGCAGATCGG", "TTCTGCTTGGATCGGAAG"))
+
+  trimLRPatterns(Lpattern = Lpattern, subject = subject)
+  trimLRPatterns(Rpattern = Rpattern, subject = subject)
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subjectSet)
+
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subjectSet,
+                 max.Lmismatch = 0, max.Rmismatch = 0)
+
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subject,
+                 max.Lmismatch = 0.2, max.Rmismatch = 0.2)
+  maxMismatches <- as.integer(0.2 * 1:9)
+  maxMismatches
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subjectSet,
+                 max.Lmismatch = maxMismatches, max.Rmismatch = maxMismatches)
+
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subjectSet,
+                 max.Lmismatch = 0, max.Rmismatch = 0, ranges = TRUE)
+  trimLRPatterns(Lpattern = Lpattern, Rpattern = Rpattern, subject = subject,
+                 max.Lmismatch = 0.2, max.Rmismatch = 0.2, ranges = TRUE)
+
+
+
+ CCODDE 
+
+This function mimics the semantic of 
+but accepts XString, XStringSet or XStringViews
+arguments and returns an XString or XStringSet object.
+
+
+
+ CCODDS 
+
+  xscat(BString("abc"), BString("EF"))
+  xscat(BString("abc"), "EF")
+  xscat("abc", "EF")
+
+  xscat(BStringSet("abc"), "EF")
+
+  xscat(c("t", "a"), DNAString("N"))
+
+  xscat("x", LETTERS, c("3", "44", "555")) 
+
+  library(drosophila2probe)
+  probes <- DNAStringSet(drosophila2probe)
+  mm <- complement(narrow(probes, start=13, end=13))
+  left <- narrow(probes, end=12)
+  right <- narrow(probes, start=14)
+  xscat(left, mm, right)
+
+  probes1000 <- as.list(probes[1:1000])
+  y1 <- do.call(xscat, probes1000)
+  y2 <- do.call(c, probes1000)  
+  y1 == y2  
+
+
+
+ CCODDE 
+
+This is a single character string containing DNA sequence of yeast chromosome number 1.  The data were obtained from the Saccharomyces Genome Database
+
